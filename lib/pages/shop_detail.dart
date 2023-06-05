@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:tungleua/pages/create_product.dart';
 
 // TODO: Fetch data for Shop Detail
+// TODO: Render page based on role of user (Customer, Shop's owner)
 class ShopDetail extends StatefulWidget {
   const ShopDetail({Key? key}) : super(key: key);
 
@@ -107,9 +109,15 @@ class _ShopDetailState extends State<ShopDetail> {
             const SizedBox(height: 10),
 
             // Add Product Button
+            // TODO: Handle Create Product
             Center(
                 child: MaterialButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const CreateProduct()));
+              },
               color: Colors.grey,
               textColor: Colors.black,
               shape: const CircleBorder(),
