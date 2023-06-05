@@ -229,7 +229,7 @@ class _CreateStoreState extends State<CreateStore> {
                               // Cancel or Confirm Button
                               Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
+                                  children: <Widget>[
                                     // Cancel Button
                                     // TODO: pop navigation stack
                                     Container(
