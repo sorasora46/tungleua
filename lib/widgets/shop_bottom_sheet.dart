@@ -1,6 +1,5 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
 import 'package:flutter/material.dart';
+import 'package:tungleua/pages/shop_detail.dart';
 
 // TODO: Take Shop or Shop detail as argument for render bottom sheet
 class ShopBottomSheet extends StatelessWidget {
@@ -21,11 +20,22 @@ class ShopBottomSheet extends StatelessWidget {
               const SizedBox(height: 25),
 
               // Shop Name
-              const Text(
-                'John Doe Coffee Shop',
-                style: TextStyle(
-                  fontSize: 23,
-                  fontWeight: FontWeight.w500,
+              // TODO: Ask design where to click to route to shop detail
+              // TODO: Fetch Data to ShopDetail
+              // TODO: Handle Authorization (Shop's Owner, Shop's Customer)
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ShopDetail()));
+                },
+                child: const Text(
+                  'John Doe Coffee Shop',
+                  style: TextStyle(
+                    fontSize: 23,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
 
@@ -53,7 +63,8 @@ class ShopBottomSheet extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              // Shop's pictures (Gallery? wtf?)
+              // TODO: Ask design what are these pictures
+              // Shop's pictures??? (Gallery? wtf?)
               Center(
                 child: Row(children: <Widget>[
                   SizedBox(
