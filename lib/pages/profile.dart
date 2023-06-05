@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tungleua/pages/create_store.dart';
+import 'package:tungleua/pages/edit_profile.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -11,6 +12,8 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   final String profileImage =
       'https://www.mckinsey.com/~/media/mckinsey/our%20people/alessandro%20agosta/alessandro-agosta_fc_mask_profile_1536x1152.jpg?mw=400&car=2:2';
+  final String name = 'Sorrawit Kwanja';
+  final String email = 'sorrawit02546@gmail.com';
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +44,9 @@ class _ProfileState extends State<Profile> {
 
                           // Name
                           // TODO: Fetch user's name
-                          const Text(
-                            'Sorrawit Kwanja',
-                            style: TextStyle(
+                          Text(
+                            name,
+                            style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.w500,
                             ),
@@ -53,9 +56,9 @@ class _ProfileState extends State<Profile> {
 
                           // Email
                           // TODO: Fetch user's email
-                          const Text(
-                            'sorrawit02546@gmail.com',
-                            style: TextStyle(
+                          Text(
+                            email,
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w300,
                             ),
@@ -75,8 +78,11 @@ class _ProfileState extends State<Profile> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const Text('Edit')));
+                                      builder: (context) => EditProfile(
+                                            profileImage: profileImage,
+                                            email: email,
+                                            name: name,
+                                          )));
                             },
                             child: const ListTile(
                               iconColor: Colors.black,
