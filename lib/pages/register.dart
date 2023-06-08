@@ -83,12 +83,18 @@ class _RegisterPageState extends State<RegisterPage> {
     if (value == null || value.isEmpty) {
       return 'Please enter your password.';
     }
+    if (value.length < 8) {
+      return 'Password should be atleast\n8 characters.';
+    }
     return null;
   }
 
   String? confirmPasswordValidator(value) {
     if (value == null || value.isEmpty) {
       return 'Please enter your password.';
+    }
+    if (value.length < 8) {
+      return 'Password should be atleast\n8 characters.';
     }
     if (value != passwordController.text) {
       return 'Your password doesn\'t matched\nwith each other.';
@@ -99,6 +105,9 @@ class _RegisterPageState extends State<RegisterPage> {
   String? phoneValidator(value) {
     if (value == null || value.isEmpty) {
       return 'Please enter your phone number.';
+    }
+    if (!RegExp(r'^0(?!0)\d{1,2}\d{7,8}$').hasMatch(value)) {
+      return 'Please enter a valid phone number.';
     }
     return null;
   }
