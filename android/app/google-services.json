@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "212265099058",
+    "project_id": "tungleua",
+    "storage_bucket": "tungleua.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:212265099058:android:a454ca333264b320d3012b",
+        "android_client_info": {
+          "package_name": "com.example.tungleua"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "212265099058-v2cfvc4qg3vqk0mh90gbmed0cmmqtdkk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkz2V-q4Dc3pDD4XHBd9aVnw4CpME7lJ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "212265099058-v2cfvc4qg3vqk0mh90gbmed0cmmqtdkk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "212265099058-ir6s7jcsk41is3ns88qejjmbfd0etjfa.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.tungleua"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

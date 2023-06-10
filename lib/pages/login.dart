@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tungleua/pages/register.dart';
+import 'package:tungleua/services/auth_service.dart';
 import 'package:tungleua/styles/text_form_style.dart';
 
 class LoginPage extends StatefulWidget {
@@ -70,8 +71,6 @@ class _LoginPageState extends State<LoginPage> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        // TODO: Don't forget to delete (login shouldn't have AppBar)
-        appBar: AppBar(),
         body: SafeArea(
           child: LayoutBuilder(
             builder: (context, constraint) {
@@ -162,10 +161,13 @@ class _LoginPageState extends State<LoginPage> {
                                   height: 45,
                                   child: FilledButton(
                                       onPressed: () {
-                                        // TODO: Handle validation
-                                        // TODO: Implement Login
-                                        debugPrint(emailController.text);
-                                        debugPrint(passwordController.text);
+                                        if (loginFormKey.currentState!
+                                            .validate()) {
+                                          AuthService()
+                                              .signInWithEmailAndPassword(
+                                                  emailController.text,
+                                                  passwordController.text);
+                                        }
                                       },
                                       child: const Row(
                                           mainAxisAlignment:

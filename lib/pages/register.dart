@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tungleua/services/auth_service.dart';
 import 'package:tungleua/styles/text_form_style.dart';
-import 'package:tungleua/widgets/navigation/bottom_navbar.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -10,6 +10,8 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final registerFormKey = GlobalKey<FormState>();
+
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -140,183 +142,187 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(20),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          // Name Field
-                          const Text('Name'),
-                          const SizedBox(height: 8),
-                          TextFormField(
-                            keyboardType: TextInputType.name,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            controller: nameController,
-                            validator: nameValidator,
-                            onChanged: handleNameChange,
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.all(16),
-                              hintText: 'Name',
-                              suffixIcon: showClearName
-                                  ? GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          nameController.clear();
-                                          showClearName = false;
-                                        });
-                                      },
-                                      child: const Icon(Icons.clear, size: 18),
-                                    )
-                                  : null,
-                              border: formBorder,
+                    child: Form(
+                      key: registerFormKey,
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            // Name Field
+                            const Text('Name'),
+                            const SizedBox(height: 8),
+                            TextFormField(
+                              keyboardType: TextInputType.name,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              controller: nameController,
+                              validator: nameValidator,
+                              onChanged: handleNameChange,
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.all(16),
+                                hintText: 'Name',
+                                suffixIcon: showClearName
+                                    ? GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            nameController.clear();
+                                            showClearName = false;
+                                          });
+                                        },
+                                        child:
+                                            const Icon(Icons.clear, size: 18),
+                                      )
+                                    : null,
+                                border: formBorder,
+                              ),
                             ),
-                          ),
 
-                          const SizedBox(height: 20),
+                            const SizedBox(height: 20),
 
-                          // Email Field
-                          const Text('Email'),
-                          const SizedBox(height: 8),
-                          TextFormField(
-                            keyboardType: TextInputType.emailAddress,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            controller: emailController,
-                            validator: emailValidator,
-                            onChanged: handleEmailChange,
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.all(16),
-                              hintText: 'your_email@mail.com',
-                              suffixIcon: showClearEmail
-                                  ? GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          emailController.clear();
-                                          showClearEmail = false;
-                                        });
-                                      },
-                                      child: const Icon(Icons.clear, size: 18),
-                                    )
-                                  : null,
-                              border: formBorder,
+                            // Email Field
+                            const Text('Email'),
+                            const SizedBox(height: 8),
+                            TextFormField(
+                              keyboardType: TextInputType.emailAddress,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              controller: emailController,
+                              validator: emailValidator,
+                              onChanged: handleEmailChange,
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.all(16),
+                                hintText: 'your_email@mail.com',
+                                suffixIcon: showClearEmail
+                                    ? GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            emailController.clear();
+                                            showClearEmail = false;
+                                          });
+                                        },
+                                        child:
+                                            const Icon(Icons.clear, size: 18),
+                                      )
+                                    : null,
+                                border: formBorder,
+                              ),
                             ),
-                          ),
 
-                          const SizedBox(height: 20),
+                            const SizedBox(height: 20),
 
-                          // Password Field
-                          const Text('Password'),
-                          const SizedBox(height: 8),
-                          TextFormField(
-                            keyboardType: TextInputType.visiblePassword,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            controller: passwordController,
-                            validator: passwordValidator,
-                            autocorrect: false,
-                            obscureText: !showClearPassword,
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.all(16),
-                              suffixIcon: GestureDetector(
-                                  onTap: handleShowPassword,
-                                  child: showClearPassword
-                                      ? const Icon(Icons.visibility, size: 18)
-                                      : const Icon(Icons.visibility_off,
-                                          size: 18)),
-                              hintText: '*******',
-                              border: formBorder,
+                            // Password Field
+                            const Text('Password'),
+                            const SizedBox(height: 8),
+                            TextFormField(
+                              keyboardType: TextInputType.visiblePassword,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              controller: passwordController,
+                              validator: passwordValidator,
+                              autocorrect: false,
+                              obscureText: !showClearPassword,
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.all(16),
+                                suffixIcon: GestureDetector(
+                                    onTap: handleShowPassword,
+                                    child: showClearPassword
+                                        ? const Icon(Icons.visibility, size: 18)
+                                        : const Icon(Icons.visibility_off,
+                                            size: 18)),
+                                hintText: '*******',
+                                border: formBorder,
+                              ),
                             ),
-                          ),
 
-                          const SizedBox(height: 20),
+                            const SizedBox(height: 20),
 
-                          // Confirm Password Field
-                          const Text('Confirm Password'),
-                          const SizedBox(height: 8),
-                          TextFormField(
-                            keyboardType: TextInputType.visiblePassword,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            controller: confirmPasswordController,
-                            validator: confirmPasswordValidator,
-                            autocorrect: false,
-                            obscureText: !showClearConfirmPassword,
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.all(16),
-                              suffixIcon: GestureDetector(
-                                  onTap: handleShowConfirmPassword,
-                                  child: showClearConfirmPassword
-                                      ? const Icon(Icons.visibility, size: 18)
-                                      : const Icon(Icons.visibility_off,
-                                          size: 18)),
-                              hintText: '*******',
-                              border: formBorder,
+                            // Confirm Password Field
+                            const Text('Confirm Password'),
+                            const SizedBox(height: 8),
+                            TextFormField(
+                              keyboardType: TextInputType.visiblePassword,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              controller: confirmPasswordController,
+                              validator: confirmPasswordValidator,
+                              autocorrect: false,
+                              obscureText: !showClearConfirmPassword,
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.all(16),
+                                suffixIcon: GestureDetector(
+                                    onTap: handleShowConfirmPassword,
+                                    child: showClearConfirmPassword
+                                        ? const Icon(Icons.visibility, size: 18)
+                                        : const Icon(Icons.visibility_off,
+                                            size: 18)),
+                                hintText: '*******',
+                                border: formBorder,
+                              ),
                             ),
-                          ),
 
-                          const SizedBox(height: 20),
+                            const SizedBox(height: 20),
 
-                          // Phone Field
-                          const Text('Phone'),
-                          const SizedBox(height: 8),
-                          TextFormField(
-                            keyboardType: TextInputType.text,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            controller: phoneController,
-                            validator: phoneValidator,
-                            onChanged: handlePhoneChange,
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.all(16),
-                              hintText: 'Phone',
-                              suffixIcon: showClearPhone
-                                  ? GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          phoneController.clear();
-                                          showClearPhone = false;
-                                        });
-                                      },
-                                      child: const Icon(Icons.clear, size: 18),
-                                    )
-                                  : null,
-                              border: formBorder,
+                            // Phone Field
+                            const Text('Phone'),
+                            const SizedBox(height: 8),
+                            TextFormField(
+                              keyboardType: TextInputType.text,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              controller: phoneController,
+                              validator: phoneValidator,
+                              onChanged: handlePhoneChange,
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.all(16),
+                                hintText: 'Phone',
+                                suffixIcon: showClearPhone
+                                    ? GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            phoneController.clear();
+                                            showClearPhone = false;
+                                          });
+                                        },
+                                        child:
+                                            const Icon(Icons.clear, size: 18),
+                                      )
+                                    : null,
+                                border: formBorder,
+                              ),
                             ),
-                          ),
 
-                          const SizedBox(height: 30),
+                            const SizedBox(height: 30),
 
-                          // Register Button
-                          Container(
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 0, vertical: 30),
-                              width: double.infinity,
-                              height: 45,
-                              child: FilledButton(
-                                  onPressed: () {
-                                    // TODO: Handle validation
-                                    // TODO: Implement Register
-                                    debugPrint(nameController.text);
-                                    debugPrint(emailController.text);
-                                    debugPrint(passwordController.text);
-                                    debugPrint(confirmPasswordController.text);
-                                    debugPrint(phoneController.text);
-
-                                    // TODO: Remove navigation when implement auth
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const BottomNavbar()));
-                                  },
-                                  child: const Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Text('Register'),
-                                        SizedBox(width: 16),
-                                        Icon(Icons.arrow_forward_ios, size: 14)
-                                      ]))),
-                        ]),
+                            // Register Button
+                            Container(
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 0, vertical: 30),
+                                width: double.infinity,
+                                height: 45,
+                                child: FilledButton(
+                                    onPressed: () {
+                                      if (registerFormKey.currentState!
+                                          .validate()) {
+                                        final name = nameController.text;
+                                        final email = emailController.text;
+                                        final password =
+                                            passwordController.text;
+                                        final phone = phoneController.text;
+                                        AuthService()
+                                            .registerWithEmailAndPassword(
+                                                email, password, name, phone);
+                                      }
+                                    },
+                                    child: const Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Text('Register'),
+                                          SizedBox(width: 16),
+                                          Icon(Icons.arrow_forward_ios,
+                                              size: 14)
+                                        ]))),
+                          ]),
+                    ),
                   ),
                 ],
               ),

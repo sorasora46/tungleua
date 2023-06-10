@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tungleua/pages/create_store.dart';
 import 'package:tungleua/pages/edit_profile.dart';
@@ -125,7 +126,7 @@ class _ProfileState extends State<Profile> {
                             height: 45,
                             child: FilledButton(
                               onPressed: () {
-                                // TODO: Implement Logout
+                                FirebaseAuth.instance.signOut();
                               },
                               style: const ButtonStyle(
                                 // TODO: Use color from theme
