@@ -13,8 +13,6 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  final String profileImage =
-      'https://www.mckinsey.com/~/media/mckinsey/our%20people/alessandro%20agosta/alessandro-agosta_fc_mask_profile_1536x1152.jpg?mw=400&car=2:2';
   final uid = FirebaseAuth.instance.currentUser!.uid;
 
   @override
@@ -39,8 +37,9 @@ class _ProfileState extends State<Profile> {
                         child: Padding(
                           padding: const EdgeInsets.all(20),
                           child: Column(
-                            children: [
+                            children: <Widget>[
                               const SizedBox(height: 30),
+
                               // Profile Image
                               SizedBox(
                                 width: 162.77,
@@ -84,10 +83,11 @@ class _ProfileState extends State<Profile> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => EditProfile(
+                                                uid: user.id,
                                                 profileImage: user.image,
                                                 email: user.email,
                                                 name: user.name,
-                                              )));
+                                              ))).then((_) => setState(() {}));
                                 },
                                 child: const ListTile(
                                   iconColor: Colors.black,
