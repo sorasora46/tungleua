@@ -20,7 +20,7 @@ void showCustomSnackBar(BuildContext context, String message, String variant) {
         backgroundColor: color,
         showCloseIcon: true,
         closeIconColor: Colors.white,
-        padding: const EdgeInsets.all(4),
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
         content: Text(message, style: const TextStyle(fontSize: 16))),
   );
 }
