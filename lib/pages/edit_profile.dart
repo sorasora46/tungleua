@@ -1,11 +1,21 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:tungleua/services/user_service.dart';
 import 'package:tungleua/styles/button_style.dart';
 import 'package:tungleua/widgets/profile_pic.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile(
-      {Key? key, required this.name, required this.email, this.profileImage})
+      {Key? key,
+      required this.uid,
+      required this.name,
+      required this.email,
+      this.profileImage})
       : super(key: key);
+  final String uid;
   final String name;
   final String email;
   final String? profileImage;
@@ -20,12 +30,42 @@ class _EditProfileState extends State<EditProfile> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
 
+  final ImagePicker imgPicker = ImagePicker();
+
   bool isEditable = false;
+  String? imageString;
+  File? image;
+
+  Future<void> handleImagePicker() async {
+    final image = await imgPicker.pickImage(source: ImageSource.gallery);
+    if (image == null) return;
+    final file = File(image.path);
+    final fileStr = base64Encode(await file.readAsBytes());
+    setState(() {
+      this.image = file;
+      imageString = fileStr;
+    });
+  }
+
+  Future<void> handleSave() async {
+    final Map<String, Object> updates = {'name': nameController.text};
+
+    if (image != null) {
+      updates['image'] = base64Encode(await image!.readAsBytes());
+    }
+
+    final isSuccess = await UserService().updateUserById(widget.uid, updates);
+    if (isSuccess != null && isSuccess) {
+      setState(() {
+        isEditable = false;
+      });
+    }
+  }
 
   void setEditable() {
     setState(() {
       if (isEditable) {
-        isEditable = false;
+        handleCancel();
       } else {
         isEditable = true;
       }
@@ -43,6 +83,7 @@ class _EditProfileState extends State<EditProfile> {
   @override
   void initState() {
     super.initState();
+    imageString = widget.profileImage;
     nameController.text = widget.name;
     emailController.text = widget.email;
   }
@@ -85,8 +126,11 @@ class _EditProfileState extends State<EditProfile> {
                       SizedBox(
                         width: 162.77,
                         height: 162.77,
-                        child: ProfilePic(image: widget.profileImage),
+                        child: GestureDetector(
+                            onTap: isEditable ? handleImagePicker : null,
+                            child: ProfilePic(image: imageString)),
                       ),
+
                       const SizedBox(height: 30),
 
                       // Name
@@ -104,11 +148,12 @@ class _EditProfileState extends State<EditProfile> {
                       // Email
                       TextFormField(
                         controller: emailController,
-                        enabled: isEditable,
+                        // enabled: isEditable,
+                        enabled: false,
                         decoration: const InputDecoration(
                             filled: true,
                             border: UnderlineInputBorder(),
-                            labelText: "Edit your name"),
+                            labelText: "Edit your email"),
                       ),
 
                       const SizedBox(height: 20),
@@ -125,7 +170,7 @@ class _EditProfileState extends State<EditProfile> {
                                 height: 45,
                                 child: OutlinedButton(
                                     style: roundedOutlineButton,
-                                    onPressed: () {},
+                                    onPressed: handleSave,
                                     child: const Text('Save')),
                               ),
 
