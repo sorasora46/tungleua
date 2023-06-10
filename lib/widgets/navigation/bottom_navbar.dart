@@ -27,8 +27,6 @@ class _BottomNavbarState extends State<BottomNavbar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // TODO: Remove AppBar
-      appBar: AppBar(),
       body: Center(
         child: pages.elementAt(selectedIndex),
       ),
