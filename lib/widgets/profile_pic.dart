@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 class ProfilePic extends StatelessWidget {
@@ -12,7 +14,7 @@ class ProfilePic extends StatelessWidget {
             child: Icon(Icons.person, color: Colors.white, size: 100),
           )
         : CircleAvatar(
-            backgroundImage: NetworkImage(image!),
+            backgroundImage: MemoryImage(base64Decode(image!)),
           );
   }
 }
