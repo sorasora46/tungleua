@@ -1,6 +1,15 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:tungleua/styles/button_style.dart';
 import 'package:tungleua/styles/text_form_style.dart';
+import 'package:tungleua/widgets/rounded_image.dart';
+import 'package:tungleua/widgets/show_dialog.dart';
 
 class CreateStore extends StatefulWidget {
   const CreateStore({Key? key}) : super(key: key);
@@ -11,15 +20,56 @@ class CreateStore extends StatefulWidget {
 
 class _CreateStoreState extends State<CreateStore> {
   final createStoreFormKey = GlobalKey<FormState>();
+
   final storeNameControlller = TextEditingController();
   final contactController = TextEditingController(); // WTH is Browser???
   final timeOpenController = TextEditingController();
   final timeCloseController = TextEditingController();
   final locationController = TextEditingController();
 
+  final ImagePicker imgPicker = ImagePicker();
+
   bool showClearStoreName = false;
   bool showClearContact = false;
   bool showClearLocation = false;
+
+  List<Uint8List>? images = [];
+
+  Future<void> handleImagePicker() async {
+    try {
+      final pickedImages = await imgPicker.pickMultiImage();
+      if (pickedImages.isEmpty) return;
+
+      if (images!.length + pickedImages.length > 4) {
+        if (mounted) {
+          showCustomSnackBar(
+              context, "Maximum of 4 pictures", SnackBarVariant.error);
+        }
+        return;
+      }
+
+      final List<Uint8List> tempArr = [];
+      for (var imgFile in pickedImages) {
+        final file = File(imgFile.path);
+        final imageBytes = await file.readAsBytes();
+        tempArr.add(imageBytes);
+      }
+
+      setState(() {
+        images!.addAll(tempArr);
+      });
+    } catch (e) {
+      debugPrint('Image picker error: $e');
+      showCustomSnackBar(
+          context, "Error picking images", SnackBarVariant.error);
+    }
+  }
+
+  void handleRemoveImage(int index) {
+    setState(() {
+      images!.removeAt(index);
+    });
+  }
 
   void handelStoreNameChange(value) {
     setState(() {
@@ -223,6 +273,55 @@ class _CreateStoreState extends State<CreateStore> {
                               const SizedBox(height: 20),
 
                               // TODO: Implement image picker
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 0),
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      const Text(
+                                          'Upload photos (maximum of 4)'),
+                                      const SizedBox(height: 10),
+                                      SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Row(children: <Widget>[
+                                          GestureDetector(
+                                              onTap: handleImagePicker,
+                                              child: DottedBorder(
+                                                  borderType: BorderType.RRect,
+                                                  radius: Radius.circular(20),
+                                                  child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20),
+                                                      child: SizedBox.fromSize(
+                                                          size: Size.fromRadius(
+                                                              38), // Image radius
+                                                          child: const Center(
+                                                              child: Icon(Icons
+                                                                  .cloud_download)))))),
+                                          Row(
+                                              children: images!
+                                                  .asMap()
+                                                  .entries
+                                                  .map((entry) {
+                                            final int index = entry.key;
+                                            final Uint8List image = entry.value;
+                                            return Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 10),
+                                              child: RoundedImage(
+                                                image: image,
+                                                index: index,
+                                                removeImage: handleRemoveImage,
+                                              ),
+                                            );
+                                          }).toList()),
+                                        ]),
+                                      )
+                                    ]),
+                              ),
 
                               const Spacer(),
 
@@ -231,14 +330,14 @@ class _CreateStoreState extends State<CreateStore> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     // Cancel Button
-                                    // TODO: pop navigation stack
                                     Container(
                                       margin: const EdgeInsets.symmetric(
                                           horizontal: 0, vertical: 30),
                                       height: 45,
                                       child: OutlinedButton(
                                           style: roundedOutlineButton,
-                                          onPressed: () {},
+                                          onPressed: () =>
+                                              Navigator.pop(context),
                                           child: const Text('Cancel')),
                                     ),
 
@@ -252,7 +351,11 @@ class _CreateStoreState extends State<CreateStore> {
                                       height: 45,
                                       child: FilledButton(
                                           style: filledButton,
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            print(storeNameControlller.text);
+                                            print(contactController.text);
+                                            print(locationController.text);
+                                          },
                                           child: const Text('Confirm')),
                                     ),
                                   ]),
