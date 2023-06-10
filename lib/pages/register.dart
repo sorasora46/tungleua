@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:tungleua/services/api.dart';
 import 'package:tungleua/services/auth_service.dart';
 import 'package:tungleua/styles/text_form_style.dart';
+import 'package:tungleua/widgets/show_dialog.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -112,6 +114,56 @@ class _RegisterPageState extends State<RegisterPage> {
       return 'Please enter a valid phone number.';
     }
     return null;
+  }
+
+  Future<void> handleRegister() async {
+    if (registerFormKey.currentState!.validate()) {
+      final name = nameController.text.toLowerCase();
+      final email = emailController.text.toLowerCase();
+      final password = passwordController.text;
+      final phone = phoneController.text;
+
+      final response = await Api().dio.get("/users/exist", data: {
+        'name': name,
+        'email': email,
+        'phone': phone,
+      });
+      final isFound = response.data['isFound'];
+
+      if (isFound) {
+        if (mounted) {
+          showCustomSnackBar(
+              context, "User is already exist.", SnackBarVariant.error);
+        }
+        return;
+      }
+
+      final credit = await AuthService()
+          .registerWithEmailAndPassword(email, password, name, phone);
+
+      // error from firebase auth
+      if (credit == null) {
+        if (mounted) {
+          showCustomSnackBar(
+              context, "Firebase Authentication Error", SnackBarVariant.error);
+        }
+        return;
+      }
+
+      if (mounted) {
+        showCustomSnackBar(context, "Registered", SnackBarVariant.success);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    phoneController.dispose();
+    super.dispose();
   }
 
   @override
@@ -299,19 +351,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 width: double.infinity,
                                 height: 45,
                                 child: FilledButton(
-                                    onPressed: () {
-                                      if (registerFormKey.currentState!
-                                          .validate()) {
-                                        final name = nameController.text;
-                                        final email = emailController.text;
-                                        final password =
-                                            passwordController.text;
-                                        final phone = phoneController.text;
-                                        AuthService()
-                                            .registerWithEmailAndPassword(
-                                                email, password, name, phone);
-                                      }
-                                    },
+                                    onPressed: handleRegister,
                                     child: const Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,

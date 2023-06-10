@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:tungleua/services/api.dart';
 
 class AuthService {
@@ -11,8 +12,12 @@ class AuthService {
     String phone,
   ) async {
     try {
+      // register with firebase
+      final userCredential = await auth.createUserWithEmailAndPassword(
+          email: email, password: password);
       // register with our server
       final response = await Api().dio.post('/users', data: {
+        'id': userCredential.user?.uid,
         'email': email,
         'password': password,
         'name': name,
@@ -21,15 +26,13 @@ class AuthService {
       });
 
       if (response.statusCode == 200) {
-        // register with firebase
-        return await auth.createUserWithEmailAndPassword(
-            email: email, password: password);
+        return userCredential;
       } else {
-        print(response.statusCode);
+        debugPrint(response.statusCode.toString());
         return null;
       }
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       return null;
     }
   }
@@ -43,14 +46,14 @@ class AuthService {
       if (response.statusCode == 200) {
         final token = response.data['token'];
         final userCred = await auth.signInWithCustomToken(token);
-        print(await auth.currentUser?.getIdToken());
+        debugPrint(await auth.currentUser?.getIdToken());
         return userCred;
       } else {
-        print(response.statusCode);
+        debugPrint(response.statusCode.toString());
         return null;
       }
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       return null;
     }
   }
