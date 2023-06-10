@@ -46,7 +46,7 @@ class AuthService {
       if (response.statusCode == 200) {
         final token = response.data['token'];
         final userCred = await auth.signInWithCustomToken(token);
-        debugPrint(await auth.currentUser?.getIdToken());
+        // debugPrint(await auth.currentUser?.getIdToken());
         return userCred;
       } else {
         debugPrint(response.statusCode.toString());
