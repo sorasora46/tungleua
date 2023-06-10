@@ -101,10 +101,11 @@ class _ProfileState extends State<Profile> {
                               GestureDetector(
                                 onTap: () {
                                   Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const CreateStore()));
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const CreateStore()))
+                                      .then((_) => setState(() {}));
                                 },
                                 child: const ListTile(
                                   iconColor: Colors.black,
