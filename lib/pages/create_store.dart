@@ -1,11 +1,11 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:tungleua/pages/pick_location.dart';
 import 'package:tungleua/styles/button_style.dart';
 import 'package:tungleua/styles/text_form_style.dart';
 import 'package:tungleua/widgets/rounded_image.dart';
@@ -32,8 +32,16 @@ class _CreateStoreState extends State<CreateStore> {
   bool showClearStoreName = false;
   bool showClearContact = false;
   bool showClearLocation = false;
+  bool isClickValidate = false;
 
   List<Uint8List>? images = [];
+
+  void handleSetLocation(LatLng position) {
+    setState(() {
+      // lat, long
+      locationController.text = '${position.latitude}, ${position.longitude}';
+    });
+  }
 
   Future<void> handleImagePicker() async {
     try {
@@ -71,6 +79,46 @@ class _CreateStoreState extends State<CreateStore> {
     });
   }
 
+  Future<void> handleOpenTime() async {
+    final openTime = await showTimePicker(
+        initialEntryMode: TimePickerEntryMode.inputOnly,
+        context: context,
+        initialTime: TimeOfDay.now(),
+        builder: (BuildContext context, Widget? child) {
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(
+              alwaysUse24HourFormat: true,
+            ),
+            child: child!,
+          );
+        });
+    if (openTime != null) {
+      setState(() {
+        timeOpenController.text = '${openTime.hour}:${openTime.minute}';
+      });
+    }
+  }
+
+  Future<void> handleCloseTime() async {
+    final closeTime = await showTimePicker(
+        initialEntryMode: TimePickerEntryMode.inputOnly,
+        context: context,
+        initialTime: TimeOfDay.now(),
+        builder: (BuildContext context, Widget? child) {
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(
+              alwaysUse24HourFormat: true,
+            ),
+            child: child!,
+          );
+        });
+    if (closeTime != null) {
+      setState(() {
+        timeCloseController.text = '${closeTime.hour}:${closeTime.minute}';
+      });
+    }
+  }
+
   void handelStoreNameChange(value) {
     setState(() {
       showClearStoreName = value.isNotEmpty;
@@ -106,6 +154,20 @@ class _CreateStoreState extends State<CreateStore> {
   String? locationValidator(value) {
     if (value == null || value.isEmpty) {
       return 'Please enter your location.';
+    }
+    return null;
+  }
+
+  String? timeOpenValidator(value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your\nopening time.';
+    }
+    return null;
+  }
+
+  String? timeCloseValidator(value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your\nclosing time.';
     }
     return null;
   }
@@ -197,7 +259,6 @@ class _CreateStoreState extends State<CreateStore> {
                               const SizedBox(height: 20),
 
                               // Time close and open
-                              // TODO: Implement Time Picker
                               Row(children: <Widget>[
                                 // Time Open
                                 Expanded(
@@ -208,6 +269,10 @@ class _CreateStoreState extends State<CreateStore> {
                                       const Text('Open'),
                                       const SizedBox(height: 8),
                                       TextFormField(
+                                        validator: timeOpenValidator,
+                                        readOnly: true,
+                                        controller: timeOpenController,
+                                        onTap: handleOpenTime,
                                         decoration: InputDecoration(
                                           contentPadding:
                                               const EdgeInsets.all(16),
@@ -228,6 +293,10 @@ class _CreateStoreState extends State<CreateStore> {
                                       const Text('Close'),
                                       const SizedBox(height: 8),
                                       TextFormField(
+                                        validator: timeCloseValidator,
+                                        readOnly: true,
+                                        controller: timeCloseController,
+                                        onTap: handleCloseTime,
                                         decoration: InputDecoration(
                                           contentPadding:
                                               const EdgeInsets.all(16),
@@ -241,10 +310,16 @@ class _CreateStoreState extends State<CreateStore> {
                               const SizedBox(height: 20),
 
                               // Location Field
-                              // TODO: Implement Location picker
                               const Text('Location'),
                               const SizedBox(height: 8),
                               TextFormField(
+                                onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => PickLocation(
+                                              setPosition: handleSetLocation,
+                                            ))),
+                                readOnly: true,
                                 keyboardType: TextInputType.streetAddress,
                                 autovalidateMode:
                                     AutovalidateMode.onUserInteraction,
@@ -272,7 +347,6 @@ class _CreateStoreState extends State<CreateStore> {
 
                               const SizedBox(height: 20),
 
-                              // TODO: Implement image picker
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 20, vertical: 0),
@@ -289,18 +363,31 @@ class _CreateStoreState extends State<CreateStore> {
                                           GestureDetector(
                                               onTap: handleImagePicker,
                                               child: DottedBorder(
+                                                  color: isClickValidate &&
+                                                          images!.isEmpty
+                                                      ? Colors.red
+                                                      : Colors.black,
                                                   borderType: BorderType.RRect,
-                                                  radius: Radius.circular(20),
+                                                  radius:
+                                                      const Radius.circular(20),
                                                   child: ClipRRect(
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               20),
                                                       child: SizedBox.fromSize(
-                                                          size: Size.fromRadius(
+                                                          size: const Size
+                                                                  .fromRadius(
                                                               38), // Image radius
-                                                          child: const Center(
-                                                              child: Icon(Icons
-                                                                  .cloud_download)))))),
+                                                          child: Center(
+                                                              child: Icon(
+                                                            Icons
+                                                                .cloud_download,
+                                                            color: isClickValidate &&
+                                                                    images!
+                                                                        .isEmpty
+                                                                ? Colors.red
+                                                                : Colors.black,
+                                                          )))))),
                                           Row(
                                               children: images!
                                                   .asMap()
@@ -319,7 +406,14 @@ class _CreateStoreState extends State<CreateStore> {
                                             );
                                           }).toList()),
                                         ]),
-                                      )
+                                      ),
+                                      const SizedBox(height: 10),
+                                      isClickValidate && images!.isEmpty
+                                          ? const Text(
+                                              'Please upload pictures of your Store.',
+                                              style:
+                                                  TextStyle(color: Colors.red))
+                                          : Container(),
                                     ]),
                               ),
 
@@ -352,9 +446,16 @@ class _CreateStoreState extends State<CreateStore> {
                                       child: FilledButton(
                                           style: filledButton,
                                           onPressed: () {
-                                            print(storeNameControlller.text);
-                                            print(contactController.text);
-                                            print(locationController.text);
+                                            setState(() {
+                                              isClickValidate = true;
+                                            });
+                                            if (createStoreFormKey.currentState!
+                                                    .validate() &&
+                                                images!.isNotEmpty) {
+                                              print(storeNameControlller.text);
+                                              print(contactController.text);
+                                              print(locationController.text);
+                                            }
                                           },
                                           child: const Text('Confirm')),
                                     ),
