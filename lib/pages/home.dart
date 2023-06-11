@@ -15,6 +15,8 @@ class _HomeState extends State<Home> {
   final mapController = MapController();
   final location = Location();
   LatLng? currentLocation;
+  LatLng? currentMapPosition;
+  double zoom = 16;
 
 // TODO: Fetch data to ShopBottomSheet
   void handleTapOnMark() {
@@ -38,8 +40,14 @@ class _HomeState extends State<Home> {
           currentLocation =
               LatLng(newLocation.latitude!, newLocation.longitude!);
         });
-        print('location has changed!\nevent: ${newLocation}');
+        debugPrint('location has changed!\nevent: ${newLocation}');
       }
+    });
+  }
+
+  void handleMapPositionChange(LatLng position) {
+    setState(() {
+      currentMapPosition = position;
     });
   }
 
@@ -61,37 +69,78 @@ class _HomeState extends State<Home> {
       body: SafeArea(
         child: currentLocation == null
             ? const Center(child: CircularProgressIndicator())
-            : FlutterMap(
-                mapController: mapController,
-                options: MapOptions(
-                  center: currentLocation,
-                  zoom: 16,
-                ),
-                nonRotatedChildren: [
-                    FilledButton(
-                        onPressed: () {},
-                        child: Text(currentLocation.toString()))
-                  ],
-                children: [
-                    TileLayer(
-                      urlTemplate:
-                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    ),
-                    MarkerLayer(markers: <Marker>[
-                      Marker(
-                          point: currentLocation!,
-                          width: 80,
-                          height: 80,
-                          builder: (context) => GestureDetector(
-                                onTap: handleTapOnMark,
-                                child: const Icon(
-                                  Icons.place,
-                                  color: Colors.red,
-                                  size: 32,
-                                ),
-                              )),
+            : Stack(children: [
+                FlutterMap(
+                    mapController: mapController,
+                    options: MapOptions(
+                        center: currentLocation,
+                        zoom: zoom,
+                        onPositionChanged: (position, _) {
+                          handleMapPositionChange(position.center!);
+                        }),
+                    children: <Widget>[
+                      TileLayer(
+                        urlTemplate:
+                            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      ),
+                      MarkerLayer(rotate: true, markers: <Marker>[
+                        Marker(
+                            point: currentLocation!,
+                            width: 80,
+                            height: 80,
+                            builder: (context) => GestureDetector(
+                                  onTap: handleTapOnMark,
+                                  child: const Icon(
+                                    Icons.place,
+                                    color: Colors.red,
+                                    size: 32,
+                                  ),
+                                )),
+                      ]),
                     ]),
+                Positioned(
+                  top: 16,
+                  right: 16,
+                  child: Column(children: <Widget>[
+                    IconButton(
+                      onPressed: () {
+                        mapController.rotate(0);
+                      },
+                      icon: const Icon(Icons.explore_outlined),
+                      iconSize: 34,
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          mapController.move(currentLocation!, zoom);
+                        });
+                      },
+                      icon: const Icon(Icons.location_searching),
+                      iconSize: 34,
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          zoom++;
+                          mapController.move(currentMapPosition!, zoom);
+                        });
+                      },
+                      icon: const Icon(Icons.add_circle_outline),
+                      iconSize: 34,
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          zoom--;
+                          mapController.move(currentMapPosition!, zoom);
+                        });
+                      },
+                      icon: const Icon(Icons.remove_circle_outline),
+                      iconSize: 34,
+                    ),
                   ]),
+                ),
+              ]),
       ),
     );
   }
