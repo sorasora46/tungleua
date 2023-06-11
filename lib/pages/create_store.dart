@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:tungleua/pages/pick_location.dart';
+import 'package:tungleua/services/api.dart';
 import 'package:tungleua/styles/button_style.dart';
 import 'package:tungleua/styles/text_form_style.dart';
 import 'package:tungleua/widgets/rounded_image.dart';
@@ -35,8 +37,9 @@ class _CreateStoreState extends State<CreateStore> {
   bool showClearLocation = false;
   bool showClearDescription = false;
   bool isClickValidate = false;
+  bool disableCreate = false;
 
-  List<Uint8List>? images = [];
+  List<String>? images = [];
 
   void handleSetLocation(LatLng position) {
     setState(() {
@@ -58,11 +61,11 @@ class _CreateStoreState extends State<CreateStore> {
         return;
       }
 
-      final List<Uint8List> tempArr = [];
+      final List<String> tempArr = [];
       for (var imgFile in pickedImages) {
         final file = File(imgFile.path);
         final imageBytes = await file.readAsBytes();
-        tempArr.add(imageBytes);
+        tempArr.add(base64Encode(imageBytes));
       }
 
       setState(() {
@@ -187,14 +190,39 @@ class _CreateStoreState extends State<CreateStore> {
     return null;
   }
 
-  void handleSubmit() {
+  Future<void> handleSubmit() async {
     setState(() {
       isClickValidate = true;
     });
     if (createStoreFormKey.currentState!.validate() && images!.isNotEmpty) {
-      print(storeNameControlller.text);
-      print(contactController.text);
-      print(locationController.text);
+      setState(() {
+        disableCreate = true;
+      });
+      final response = await Api().dio.post('/stores/', data: {
+        'name': storeNameControlller.text,
+        'contact': contactController.text,
+        'time_open': timeOpenController.text,
+        'time_close': timeCloseController.text,
+        'latitude': double.parse(locationController.text.split(',')[0].trim()),
+        'longitude': double.parse(locationController.text.split(',')[1].trim()),
+        'description': descriptionController.text,
+        'images': images,
+      });
+
+      if (response.statusCode == 200) {
+        if (mounted) {
+          Navigator.pop(context, true); // return true if create success
+        }
+      } else {
+        if (mounted) {
+          showCustomSnackBar(
+              context, "Error Creating Store", SnackBarVariant.error);
+        }
+      }
+    } else {
+      setState(() {
+        disableCreate = false;
+      });
     }
   }
 
@@ -453,7 +481,8 @@ class _CreateStoreState extends State<CreateStore> {
                                                   .entries
                                                   .map((entry) {
                                             final int index = entry.key;
-                                            final Uint8List image = entry.value;
+                                            final Uint8List image =
+                                                base64Decode(entry.value);
                                             return Padding(
                                               padding: const EdgeInsets.only(
                                                   left: 10),
@@ -504,7 +533,9 @@ class _CreateStoreState extends State<CreateStore> {
                                       height: 45,
                                       child: FilledButton(
                                           style: filledButton,
-                                          onPressed: handleSubmit,
+                                          onPressed: disableCreate
+                                              ? null
+                                              : handleSubmit,
                                           child: const Text('Confirm')),
                                     ),
                                   ]),
