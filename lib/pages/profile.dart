@@ -16,6 +16,19 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   final uid = FirebaseAuth.instance.currentUser!.uid;
 
+  void handleCreateStore() {
+    Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const CreateStore()))
+        .then((isSuccess) {
+      if (isSuccess != null && isSuccess) {
+        showCustomSnackBar(context, "Store Created!", SnackBarVariant.success);
+      }
+      setState(() {});
+    });
+  }
+
+  void handleManageStore() {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,26 +113,16 @@ class _ProfileState extends State<Profile> {
 
                               // Create store
                               GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const CreateStore()))
-                                      .then((isSuccess) {
-                                    if (isSuccess != null && isSuccess) {
-                                      showCustomSnackBar(
-                                          context,
-                                          "Store Created!",
-                                          SnackBarVariant.success);
-                                    }
-                                  });
-                                },
-                                child: const ListTile(
+                                onTap: user.isShop
+                                    ? handleManageStore
+                                    : handleCreateStore,
+                                child: ListTile(
                                   iconColor: Colors.black,
-                                  trailing: Icon(Icons.arrow_right),
-                                  leading: Icon(Icons.location_on_outlined),
-                                  title: Text('Create Store'),
+                                  trailing: const Icon(Icons.arrow_right),
+                                  leading:
+                                      const Icon(Icons.location_on_outlined),
+                                  title: Text(
+                                      '${user.isShop ? "Manage" : "Create"} Store'),
                                 ),
                               ),
 
