@@ -4,6 +4,7 @@ import 'package:tungleua/pages/create_store.dart';
 import 'package:tungleua/pages/edit_profile.dart';
 import 'package:tungleua/services/user_service.dart';
 import 'package:tungleua/widgets/profile_pic.dart';
+import 'package:tungleua/widgets/show_dialog.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -105,7 +106,14 @@ class _ProfileState extends State<Profile> {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   const CreateStore()))
-                                      .then((_) => setState(() {}));
+                                      .then((isSuccess) {
+                                    if (isSuccess != null && isSuccess) {
+                                      showCustomSnackBar(
+                                          context,
+                                          "Store Created!",
+                                          SnackBarVariant.success);
+                                    }
+                                  });
                                 },
                                 child: const ListTile(
                                   iconColor: Colors.black,
@@ -134,17 +142,25 @@ class _ProfileState extends State<Profile> {
                                   onPressed: () {
                                     FirebaseAuth.instance.signOut();
                                   },
-                                  style: const ButtonStyle(
-                                    // TODO: Use color from theme
-                                    backgroundColor:
-                                        MaterialStatePropertyAll(Colors.green),
+                                  style: ButtonStyle(
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                        side: const BorderSide(
+                                            color: Colors.green),
+                                      ),
+                                    ),
+                                    backgroundColor: MaterialStateProperty.all(
+                                        Colors.transparent),
                                   ),
                                   child: const Text(
                                     'Logout',
                                     style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500),
+                                      color: Colors.green,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
                                 ),
                               ),
