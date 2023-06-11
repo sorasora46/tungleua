@@ -17,6 +17,11 @@ void showCustomSnackBar(BuildContext context, String message, String variant) {
   }
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(color: Colors.white, width: 1),
+          borderRadius: BorderRadius.circular(24),
+        ),
         backgroundColor: color,
         showCloseIcon: true,
         closeIconColor: Colors.white,
