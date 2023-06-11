@@ -26,12 +26,14 @@ class _CreateStoreState extends State<CreateStore> {
   final timeOpenController = TextEditingController();
   final timeCloseController = TextEditingController();
   final locationController = TextEditingController();
+  final descriptionController = TextEditingController();
 
   final ImagePicker imgPicker = ImagePicker();
 
   bool showClearStoreName = false;
   bool showClearContact = false;
   bool showClearLocation = false;
+  bool showClearDescription = false;
   bool isClickValidate = false;
 
   List<Uint8List>? images = [];
@@ -158,6 +160,19 @@ class _CreateStoreState extends State<CreateStore> {
     return null;
   }
 
+  void handleDescriptionChange(value) {
+    setState(() {
+      showClearDescription = value.isNotEmpty;
+    });
+  }
+
+  String? descriptionValidator(value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your description.';
+    }
+    return null;
+  }
+
   String? timeOpenValidator(value) {
     if (value == null || value.isEmpty) {
       return 'Please enter your\nopening time.';
@@ -170,6 +185,17 @@ class _CreateStoreState extends State<CreateStore> {
       return 'Please enter your\nclosing time.';
     }
     return null;
+  }
+
+  void handleSubmit() {
+    setState(() {
+      isClickValidate = true;
+    });
+    if (createStoreFormKey.currentState!.validate() && images!.isNotEmpty) {
+      print(storeNameControlller.text);
+      print(contactController.text);
+      print(locationController.text);
+    }
   }
 
   @override
@@ -347,6 +373,39 @@ class _CreateStoreState extends State<CreateStore> {
 
                               const SizedBox(height: 20),
 
+                              // Location Field
+                              const Text('Description'),
+                              const SizedBox(height: 8),
+                              TextFormField(
+                                onTap: () {},
+                                keyboardType: TextInputType.multiline,
+                                maxLines: 5,
+                                autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                controller: descriptionController,
+                                validator: descriptionValidator,
+                                onChanged: handleDescriptionChange,
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.all(16),
+                                  hintText: 'Description',
+                                  suffixIcon: showClearDescription
+                                      ? GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              descriptionController.clear();
+                                              showClearDescription = false;
+                                            });
+                                          },
+                                          child:
+                                              const Icon(Icons.clear, size: 18),
+                                        )
+                                      : null,
+                                  border: formBorder,
+                                ),
+                              ),
+
+                              const SizedBox(height: 20),
+
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 20, vertical: 0),
@@ -445,18 +504,7 @@ class _CreateStoreState extends State<CreateStore> {
                                       height: 45,
                                       child: FilledButton(
                                           style: filledButton,
-                                          onPressed: () {
-                                            setState(() {
-                                              isClickValidate = true;
-                                            });
-                                            if (createStoreFormKey.currentState!
-                                                    .validate() &&
-                                                images!.isNotEmpty) {
-                                              print(storeNameControlller.text);
-                                              print(contactController.text);
-                                              print(locationController.text);
-                                            }
-                                          },
+                                          onPressed: handleSubmit,
                                           child: const Text('Confirm')),
                                     ),
                                   ]),
