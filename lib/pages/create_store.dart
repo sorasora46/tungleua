@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dotted_border/dotted_border.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
@@ -199,6 +200,7 @@ class _CreateStoreState extends State<CreateStore> {
         disableCreate = true;
       });
       final response = await Api().dio.post('/stores/', data: {
+        'user_id': FirebaseAuth.instance.currentUser!.uid,
         'name': storeNameControlller.text,
         'contact': contactController.text,
         'time_open': timeOpenController.text,
