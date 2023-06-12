@@ -122,7 +122,6 @@ class _EditProfileState extends State<EditProfile> {
                     children: <Widget>[
                       const SizedBox(height: 30),
                       // Profile Image
-                      // TODO: Implement image picker
                       SizedBox(
                         width: 162.77,
                         height: 162.77,
@@ -163,7 +162,6 @@ class _EditProfileState extends State<EditProfile> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               // Save Button
-                              // TODO: Save info and send to backend
                               Container(
                                 margin: const EdgeInsets.symmetric(
                                     horizontal: 0, vertical: 30),

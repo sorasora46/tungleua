@@ -444,7 +444,7 @@ class _CreateStoreState extends State<CreateStore> {
                                         CrossAxisAlignment.start,
                                     children: <Widget>[
                                       const Text(
-                                          'Upload photos (maximum of 4)'),
+                                          'Upload photos of your Store (maximum of 4)'),
                                       const SizedBox(height: 10),
                                       SingleChildScrollView(
                                         scrollDirection: Axis.horizontal,
@@ -528,7 +528,6 @@ class _CreateStoreState extends State<CreateStore> {
                                     const SizedBox(width: 10),
 
                                     // Confirm Button
-                                    // TODO: Implement Create Store
                                     Container(
                                       margin: const EdgeInsets.symmetric(
                                           horizontal: 0, vertical: 30),
