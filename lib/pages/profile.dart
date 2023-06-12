@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tungleua/pages/create_store.dart';
 import 'package:tungleua/pages/edit_profile.dart';
+import 'package:tungleua/pages/manage_store.dart';
 import 'package:tungleua/services/user_service.dart';
 import 'package:tungleua/widgets/profile_pic.dart';
 import 'package:tungleua/widgets/show_dialog.dart';
@@ -27,7 +28,11 @@ class _ProfileState extends State<Profile> {
     });
   }
 
-  void handleManageStore() {}
+  void handleManageStore() {
+    Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const ManageStore()))
+        .then((_) => setState(() {}));
+  }
 
   @override
   Widget build(BuildContext context) {
