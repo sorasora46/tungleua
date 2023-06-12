@@ -11,7 +11,7 @@ class RoundedImage extends StatelessWidget {
       : super(key: key);
   final Uint8List image;
   final int index;
-  final void Function(int) removeImage;
+  final void Function(int)? removeImage;
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +28,11 @@ class RoundedImage extends StatelessWidget {
           top: -8,
           right: -8,
           child: ElevatedButton(
-            onPressed: () => removeImage(index),
+            onPressed: () => removeImage != null ? removeImage!(index) : null,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red, // Set background color to red
+              backgroundColor: removeImage != null
+                  ? Colors.red
+                  : Colors.grey, // Set background color to red
               shape: const CircleBorder(),
               padding: const EdgeInsets.all(
                   4), // Adjust the padding to make the button smaller
