@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tungleua/pages/register.dart';
 import 'package:tungleua/styles/text_form_style.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:dio/dio.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -12,34 +10,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  Future<void> signInAndRetrieveToken(String email, String password) async {
-    try {
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-
-      User user = userCredential.user!;
-      IdTokenResult tokenResult = await user.getIdTokenResult();
-      String token = tokenResult.token!;
-
-      var dio = Dio();
-      dio.options.headers['Authorization'] = 'Bearer $token';
-
-      try {
-        Response response = await dio.get('http://localhost:3000/login');
-        print('Response: ${response.data}');
-      } catch (error) {
-        print('Error: $error');
-      }
-
-      print('Token: $token ');
-    } catch (e) {
-      print('Failed to sign in: $e');
-    }
-  }
-
   final loginFormKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -196,9 +166,6 @@ class _LoginPageState extends State<LoginPage> {
                                         // TODO: Implement Login
                                         debugPrint(emailController.text);
                                         debugPrint(passwordController.text);
-                                        signInAndRetrieveToken(
-                                            emailController.text,
-                                            passwordController.text);
                                       },
                                       child: const Row(
                                           mainAxisAlignment:
