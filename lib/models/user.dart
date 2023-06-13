@@ -28,12 +28,12 @@ class AppUser {
 
   factory AppUser.fromJSON(Map<String, dynamic> json) {
     return AppUser(
-      id: json['id'],
-      email: json['email'],
-      name: json['name'],
-      phone: json['phone'],
-      isShop: json['is_shop'],
-      image: json['image'],
+      id: json['id'] as String,
+      email: json['email'] as String,
+      name: json['name'] as String,
+      phone: json['phone'] as String,
+      isShop: json['is_shop'] as bool,
+      image: json['image'] as String,
     );
   }
 
