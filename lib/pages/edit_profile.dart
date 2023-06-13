@@ -55,7 +55,7 @@ class _EditProfileState extends State<EditProfile> {
     }
 
     final isSuccess = await UserService().updateUserById(widget.uid, updates);
-    if (isSuccess != null && isSuccess) {
+    if (isSuccess) {
       setState(() {
         isEditable = false;
       });
@@ -161,28 +161,28 @@ class _EditProfileState extends State<EditProfile> {
                         Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              // Save Button
+                              // Cancel Button
                               Container(
                                 margin: const EdgeInsets.symmetric(
                                     horizontal: 0, vertical: 30),
                                 height: 45,
                                 child: OutlinedButton(
                                     style: roundedOutlineButton,
-                                    onPressed: handleSave,
-                                    child: const Text('Save')),
+                                    onPressed: handleCancel,
+                                    child: const Text('Cancel')),
                               ),
 
                               const SizedBox(width: 10),
 
-                              // Cancel Button
+                              // Save Button
                               Container(
                                 margin: const EdgeInsets.symmetric(
                                     horizontal: 0, vertical: 30),
                                 height: 45,
                                 child: FilledButton(
                                     style: filledButton,
-                                    onPressed: handleCancel,
-                                    child: const Text('Cancel')),
+                                    onPressed: handleSave,
+                                    child: const Text('Save')),
                               ),
                             ]),
                     ],
