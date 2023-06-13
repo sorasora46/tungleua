@@ -114,9 +114,10 @@ class _ShopDetailState extends State<ShopDetail> {
                 child: MaterialButton(
               onPressed: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const CreateProduct()));
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const CreateProduct()))
+                    .then((_) => setState(() {}));
               },
               color: Colors.grey,
               textColor: Colors.black,
