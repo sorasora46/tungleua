@@ -9,11 +9,11 @@ class UserService {
     return user;
   }
 
-  Future<bool?> updateUserById(String uid, Object updates) async {
+  Future<bool> updateUserById(String uid, Object updates) async {
     final response = await Api().dio.put('/users/update/$uid', data: updates);
     if (response.statusCode == 200) {
-      return response.data == 'success';
+      return true;
     }
-    return null;
+    return false;
   }
 }
