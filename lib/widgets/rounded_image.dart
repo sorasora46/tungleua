@@ -3,15 +3,10 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 
 class RoundedImage extends StatelessWidget {
-  const RoundedImage(
-      {Key? key,
-      required this.image,
-      required this.index,
-      required this.removeImage})
+  const RoundedImage({Key? key, required this.image, this.removeImage})
       : super(key: key);
   final Uint8List image;
-  final int index;
-  final void Function(int)? removeImage;
+  final void Function()? removeImage;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +23,7 @@ class RoundedImage extends StatelessWidget {
           top: -8,
           right: -8,
           child: ElevatedButton(
-            onPressed: () => removeImage != null ? removeImage!(index) : null,
+            onPressed: () => removeImage != null ? removeImage!() : null,
             style: ElevatedButton.styleFrom(
               backgroundColor: removeImage != null
                   ? Colors.red
