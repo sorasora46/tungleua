@@ -7,8 +7,6 @@ environment:
   sdk: '>=3.0.2 <4.0.0'
 
 dependencies:
-  dio: ^5.2.1+1
-  firebase_auth: ^4.6.3
   flutter:
     sdk: flutter
   flutter_map: ^5.0.0
