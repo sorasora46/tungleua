@@ -12,19 +12,20 @@ class Store {
   final double latitude;
   final double longtitude;
   final String userId;
-  final List<Uint8List> images;
+  final Uint8List image;
 
-  Store(
-      {required this.id,
-      required this.name,
-      required this.contact,
-      required this.timeOpen,
-      required this.timeClose,
-      required this.description,
-      required this.latitude,
-      required this.longtitude,
-      required this.userId,
-      required this.images});
+  Store({
+    required this.id,
+    required this.name,
+    required this.contact,
+    required this.timeOpen,
+    required this.timeClose,
+    required this.description,
+    required this.latitude,
+    required this.longtitude,
+    required this.userId,
+    required this.image,
+  });
 
   Map<String, dynamic> toJSON() {
     return {
@@ -37,7 +38,7 @@ class Store {
       'latitude': latitude,
       'longitude': longtitude,
       'user_id': userId,
-      'images': images,
+      'image': image,
     };
   }
 
@@ -52,9 +53,7 @@ class Store {
       latitude: json['latitude'] as double,
       longtitude: json['longtitude'] as double,
       userId: json['user_id'] as String,
-      images: (json['images'] as List<dynamic>)
-          .map((storeImage) => base64Decode(storeImage['Image']))
-          .toList(),
+      image: base64Decode(json['image'] as String),
     );
   }
 
