@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:tungleua/models/store.dart';
 import 'package:tungleua/pages/create_product.dart';
@@ -20,14 +22,16 @@ class _ShopDetailState extends State<ShopDetail> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        surfaceTintColor: Colors.transparent,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        actions: <Widget>[
-          IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert))
-        ],
-      ),
+          iconTheme: const IconThemeData(color: Colors.white),
+          surfaceTintColor: Colors.transparent,
+          // backgroundColor: Colors.transparent,
+          backgroundColor: const Color(0x44000000),
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          actions: <Widget>[
+            // TODO: Implement Option menu
+            IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert))
+          ]),
       // TODO: Create rounded top border
       body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,7 +40,8 @@ class _ShopDetailState extends State<ShopDetail> {
             SizedBox(
                 height: 225,
                 width: double.infinity,
-                child: Image.network(shopPic, fit: BoxFit.cover)),
+                child: Image.memory(base64Decode(widget.store!.image),
+                    fit: BoxFit.cover)),
 
             const SizedBox(height: 20),
 
