@@ -1,3 +1,4 @@
+import 'package:tungleua/models/product.dart';
 import 'package:tungleua/services/api.dart';
 import 'package:tungleua/models/store.dart';
 
@@ -16,5 +17,16 @@ class StoreService {
       return true;
     }
     return false;
+  }
+
+  Future<List<Product>?> getProductsFromStoreId(String storeId) async {
+    final response = await Api().dio.get("/products/find-many-by-id/$storeId");
+    if (response.statusCode != 200) {
+      return null;
+    }
+    final data = response.data as List<dynamic>;
+    final products = data.map((product) => Product.fromJSON(product)).toList();
+
+    return products;
   }
 }
