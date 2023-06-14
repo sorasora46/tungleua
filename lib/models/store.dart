@@ -12,7 +12,7 @@ class Store {
   final double latitude;
   final double longtitude;
   final String userId;
-  final Uint8List image;
+  final String image;
 
   Store({
     required this.id,
@@ -53,7 +53,7 @@ class Store {
       latitude: json['latitude'] as double,
       longtitude: json['longtitude'] as double,
       userId: json['user_id'] as String,
-      image: base64Decode(json['image'] as String),
+      image: json['image'] as String,
     );
   }
 
