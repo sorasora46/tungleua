@@ -160,7 +160,10 @@ class _ShopDetailState extends State<ShopDetail> {
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
                   children: products
-                      .map((product) => ProductCard(product: product))
+                      .map((product) => Padding(
+                            padding: const EdgeInsets.all(32),
+                            child: ProductCard(product: product),
+                          ))
                       .toList()),
             ),
           ]),
