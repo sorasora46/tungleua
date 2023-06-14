@@ -25,6 +25,7 @@ class _CreateProductState extends State<CreateProduct> {
   final nameController = TextEditingController();
   final detailController = TextEditingController();
   final priceController = TextEditingController();
+  final amountController = TextEditingController();
 
   final ImagePicker imgPicker = ImagePicker();
 
@@ -73,7 +74,7 @@ class _CreateProductState extends State<CreateProduct> {
         'price': priceController.text,
         'store_id': widget.storeId,
         'image': base64Encode(imageBytes!),
-        'amount': 'store_id',
+        'amount': amountController.text,
       });
 
       if (response.statusCode == 200) {
@@ -122,6 +123,16 @@ class _CreateProductState extends State<CreateProduct> {
   String? priceValidator(value) {
     if (value == null || value.isEmpty) {
       return 'Please enter product price.';
+    }
+    return null;
+  }
+
+  String? amountValidator(value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter\nproduct amount.';
+    }
+    if (!RegExp(r'^[1-9]\d*$').hasMatch(value)) {
+      return 'Please enter a\nnon-zero number.';
     }
     return null;
   }
@@ -212,25 +223,57 @@ class _CreateProductState extends State<CreateProduct> {
 
                           const SizedBox(height: 20),
 
-                          // Product Price
-                          const Text('Price'),
-                          const SizedBox(height: 8),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.5,
-                            child: TextFormField(
-                              keyboardType: TextInputType.text,
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
-                              controller: priceController,
-                              validator: priceValidator,
-                              decoration: InputDecoration(
-                                suffixIcon: const Icon(Icons.sell),
-                                contentPadding: const EdgeInsets.all(16),
-                                hintText: 'Product Price',
-                                border: formBorder,
-                              ),
-                            ),
-                          ),
+                          Row(children: <Widget>[
+                            // Product Price
+                            Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  const Text('Price'),
+                                  const SizedBox(height: 8),
+                                  SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.5,
+                                      child: TextFormField(
+                                          keyboardType: TextInputType.text,
+                                          autovalidateMode: AutovalidateMode
+                                              .onUserInteraction,
+                                          controller: priceController,
+                                          validator: priceValidator,
+                                          decoration: InputDecoration(
+                                              suffixIcon:
+                                                  const Icon(Icons.sell),
+                                              contentPadding:
+                                                  const EdgeInsets.all(16),
+                                              hintText: 'Product Price',
+                                              border: formBorder)))
+                                ]),
+
+                            const SizedBox(width: 10),
+
+                            // Product Amount
+                            Expanded(
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                  const Text('Amount'),
+                                  const SizedBox(height: 8),
+                                  SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.5,
+                                      child: TextFormField(
+                                          keyboardType: TextInputType.text,
+                                          autovalidateMode: AutovalidateMode
+                                              .onUserInteraction,
+                                          controller: amountController,
+                                          validator: amountValidator,
+                                          decoration: InputDecoration(
+                                              contentPadding:
+                                                  const EdgeInsets.all(16),
+                                              hintText: 'Amount',
+                                              border: formBorder)))
+                                ])),
+                          ]),
 
                           const SizedBox(height: 20),
 
@@ -309,7 +352,6 @@ class _CreateProductState extends State<CreateProduct> {
                                 const SizedBox(width: 10),
 
                                 // Confirm Button
-                                // TODO: Implement Create Product
                                 Container(
                                   margin: const EdgeInsets.symmetric(
                                       horizontal: 0, vertical: 30),

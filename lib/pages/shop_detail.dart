@@ -127,7 +127,6 @@ class _ShopDetailState extends State<ShopDetail> {
             const SizedBox(height: 5),
 
             // Add Product Button
-            // TODO: Handle Create Product
             Center(
                 child: MaterialButton(
               onPressed: () {
