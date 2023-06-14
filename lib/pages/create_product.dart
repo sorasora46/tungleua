@@ -1,15 +1,19 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:tungleua/services/api.dart';
 import 'package:tungleua/styles/button_style.dart';
 import 'package:tungleua/styles/text_form_style.dart';
+import 'package:tungleua/widgets/rounded_image.dart';
 import 'package:tungleua/widgets/show_dialog.dart';
 
 class CreateProduct extends StatefulWidget {
-  const CreateProduct({Key? key}) : super(key: key);
+  const CreateProduct({Key? key, required this.storeId}) : super(key: key);
+  final String storeId;
 
   @override
   State<CreateProduct> createState() => _CreateProductState();
@@ -44,15 +48,49 @@ class _CreateProductState extends State<CreateProduct> {
       });
     } catch (e) {
       debugPrint('Image picker error: $e');
-      showCustomSnackBar(
-          context, "Error picking images", SnackBarVariant.error);
+      showCustomSnackBar(context, "Error picking image", SnackBarVariant.error);
     }
   }
 
-  void handleRemoveImage(int index) {
+  void handleRemoveImage() {
     setState(() {
       image = null;
+      imageBytes = null;
     });
+  }
+
+  Future<void> handleSubmit() async {
+    setState(() {
+      isClickValidate = true;
+    });
+    if (createProductFormKey.currentState!.validate() && imageBytes != null) {
+      setState(() {
+        disableCreate = true;
+      });
+      final response = await Api().dio.post('/products/', data: {
+        'title': nameController.text,
+        'description': detailController.text,
+        'price': priceController.text,
+        'store_id': widget.storeId,
+        'image': base64Encode(imageBytes!),
+        'amount': 'store_id',
+      });
+
+      if (response.statusCode == 200) {
+        if (mounted) {
+          Navigator.pop(context, true); // return true if create success
+        }
+      } else {
+        if (mounted) {
+          showCustomSnackBar(
+              context, "Error Creating Store", SnackBarVariant.error);
+        }
+      }
+    } else {
+      setState(() {
+        disableCreate = false;
+      });
+    }
   }
 
   String? nameValidator(value) {
@@ -233,14 +271,13 @@ class _CreateProductState extends State<CreateProduct> {
                                                                 ? Colors.red
                                                                 : Colors.black,
                                                       )))))),
-                                      // Padding(
-                                      //   padding:
-                                      //       const EdgeInsets.only(left: 10),
-                                      //   child: RoundedImage(
-                                      //     image: imageBytes,
-                                      //     removeImage: handleRemoveImage,
-                                      //   ),
-                                      // ),
+                                      if (imageBytes != null)
+                                        Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 10),
+                                            child: RoundedImage(
+                                                image: imageBytes!,
+                                                removeImage: handleRemoveImage))
                                     ]),
                                   ),
                                   const SizedBox(height: 10),
@@ -279,7 +316,7 @@ class _CreateProductState extends State<CreateProduct> {
                                   height: 45,
                                   child: FilledButton(
                                       style: filledButton,
-                                      onPressed: () {},
+                                      onPressed: handleSubmit,
                                       child: const Text('Confirm')),
                                 ),
                               ]),
