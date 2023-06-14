@@ -39,8 +39,6 @@ class _ShopBottomSheetState extends State<ShopBottomSheet> {
               const SizedBox(height: 25),
 
               // Shop Name
-              // TODO: Ask design where to click to route to shop detail
-              // TODO: Fetch Data to ShopDetail
               // TODO: Handle Authorization (Shop's Owner, Shop's Customer)
               GestureDetector(
                 onTap: () {
@@ -49,9 +47,9 @@ class _ShopBottomSheetState extends State<ShopBottomSheet> {
                       MaterialPageRoute(
                           builder: (context) => const ShopDetail()));
                 },
-                child: const Text(
-                  'John Doe Coffee Shop',
-                  style: TextStyle(
+                child: Text(
+                  store?.name ?? "",
+                  style: const TextStyle(
                     fontSize: 23,
                     fontWeight: FontWeight.w500,
                   ),
@@ -61,9 +59,9 @@ class _ShopBottomSheetState extends State<ShopBottomSheet> {
               const SizedBox(height: 10),
 
               // Shop open - close
-              const Text(
-                'Open 7:00 AM - 8:00 PM',
-                style: TextStyle(
+              Text(
+                '${store?.timeOpen ?? ""} - ${store?.timeClose ?? ""}',
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
                 ),
@@ -71,10 +69,10 @@ class _ShopBottomSheetState extends State<ShopBottomSheet> {
 
               const SizedBox(height: 10),
 
-              // Shop Address
-              const Text(
-                '115/1 115/2 Pracha Uthit Rd, Bang Mot, Thung Khru, Bangkok 10140',
-                style: TextStyle(
+              // Shop Address (Description)
+              Text(
+                store?.description ?? "",
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w300,
                 ),
@@ -82,8 +80,8 @@ class _ShopBottomSheetState extends State<ShopBottomSheet> {
 
               const SizedBox(height: 20),
 
-              // TODO: Ask design what are these pictures
-              // Shop's pictures??? (Gallery? wtf?)
+              // Pictures of shop's products
+              // TODO: Handle render images
               Center(
                 child: Row(children: <Widget>[
                   SizedBox(
