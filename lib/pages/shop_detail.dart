@@ -5,6 +5,7 @@ import 'package:tungleua/models/product.dart';
 import 'package:tungleua/models/store.dart';
 import 'package:tungleua/pages/create_product.dart';
 import 'package:tungleua/services/store_service.dart';
+import 'package:tungleua/widgets/product_card.dart';
 
 // TODO: Render page based on role of user (Customer, Shop's owner)
 class ShopDetail extends StatefulWidget {
@@ -16,7 +17,7 @@ class ShopDetail extends StatefulWidget {
 }
 
 class _ShopDetailState extends State<ShopDetail> {
-  List<Product>? products;
+  List<Product> products = [];
 
   @override
   void initState() {
@@ -25,7 +26,9 @@ class _ShopDetailState extends State<ShopDetail> {
       StoreService()
           .getProductsFromStoreId(widget.store!.id)
           .then((products) => setState(() {
-                this.products = products;
+                if (products != null) {
+                  this.products = products;
+                }
               }));
     }
   }
@@ -158,32 +161,9 @@ class _ShopDetailState extends State<ShopDetail> {
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
                   // TODO: Create Card for Product
-                  children: const <Widget>[
-                    ListTile(
-                      leading: Icon(Icons.access_alarm),
-                      title: Text('Test'),
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.access_alarm),
-                      title: Text('Test'),
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.access_alarm),
-                      title: Text('Test'),
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.access_alarm),
-                      title: Text('Test'),
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.access_alarm),
-                      title: Text('Test'),
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.access_alarm),
-                      title: Text('Test'),
-                    ),
-                  ]),
+                  children: products
+                      .map((product) => ProductCard(product: product))
+                      .toList()),
             ),
           ]),
     );
