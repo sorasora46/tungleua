@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:tungleua/services/user_service.dart';
 import 'package:tungleua/styles/button_style.dart';
 import 'package:tungleua/widgets/profile_pic.dart';
+import 'package:tungleua/widgets/show_dialog.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile(
@@ -48,6 +49,9 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Future<void> handleSave() async {
+    showCustomSnackBar(
+        context, "Updating your profile . . .", SnackBarVariant.info);
+
     final Map<String, Object> updates = {'name': nameController.text};
 
     if (image != null) {
@@ -56,6 +60,9 @@ class _EditProfileState extends State<EditProfile> {
 
     final isSuccess = await UserService().updateUserById(widget.uid, updates);
     if (isSuccess) {
+      if (mounted) {
+        showCustomSnackBar(context, "Update success!", SnackBarVariant.success);
+      }
       setState(() {
         isEditable = false;
       });

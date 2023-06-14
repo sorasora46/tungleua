@@ -195,7 +195,15 @@ class _ManageStoreState extends State<ManageStore> {
     setState(() {
       isClickValidate = true;
     });
+
     if (editStoreFormKey.currentState!.validate() && imageBytes != null) {
+      showCustomSnackBar(
+          context, "Updating your Store . . .", SnackBarVariant.info);
+
+      setState(() {
+        isEditable = false;
+      });
+
       final Map<String, dynamic> updates = {
         'name': storeNameControlller.text,
         'contact': contactController.text,
@@ -210,10 +218,11 @@ class _ManageStoreState extends State<ManageStore> {
       final isSuccess =
           await StoreService().updateStoreByStoreId(store!.id, updates);
 
-      if (isSuccess != null && isSuccess) {
-        setState(() {
-          isEditable = false;
-        });
+      if (isSuccess) {
+        if (mounted) {
+          showCustomSnackBar(
+              context, "Update success!", SnackBarVariant.success);
+        }
       }
     }
   }
