@@ -153,14 +153,12 @@ class _ShopDetailState extends State<ShopDetail> {
             const SizedBox(height: 10),
 
             // List of Products
-            // TODO: Fetch products
             Expanded(
               child: ListView(
                   // https://stackoverflow.com/questions/67555582/flutter-listview-has-gap-at-beginning
                   padding: const EdgeInsets.all(0),
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
-                  // TODO: Create Card for Product
                   children: products
                       .map((product) => ProductCard(product: product))
                       .toList()),
