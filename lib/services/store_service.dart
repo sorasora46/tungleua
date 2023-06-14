@@ -9,12 +9,12 @@ class StoreService {
     return store;
   }
 
-  Future<bool?> updateStoreByStoreId(String storeId, Object updates) async {
+  Future<bool> updateStoreByStoreId(String storeId, Object updates) async {
     final response =
         await Api().dio.put("/stores/update/$storeId", data: updates);
     if (response.statusCode == 200) {
-      return response.data == 'success';
+      return true;
     }
-    return null;
+    return false;
   }
 }
