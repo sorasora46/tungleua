@@ -187,7 +187,6 @@ class _CreateStoreState extends State<CreateStore> {
       setState(() {
         disableCreate = true;
       });
-      print(timeOpenController.text);
       final response = await Api().dio.post('/stores/', data: {
         'user_id': FirebaseAuth.instance.currentUser!.uid,
         'name': storeNameControlller.text,
