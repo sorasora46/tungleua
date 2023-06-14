@@ -54,12 +54,10 @@ class _ShopDetailState extends State<ShopDetail> {
           children: <Widget>[
             // Shop's picture
             SizedBox(
-                height: 225,
+                height: 200,
                 width: double.infinity,
                 child: Image.memory(base64Decode(widget.store!.image),
                     fit: BoxFit.cover)),
-
-            const SizedBox(height: 20),
 
             // Shop Name
             Padding(
@@ -72,8 +70,6 @@ class _ShopDetailState extends State<ShopDetail> {
                 ),
               ),
             ),
-
-            const SizedBox(height: 5),
 
             // Shop Address (Description)
             ListTile(
@@ -115,7 +111,7 @@ class _ShopDetailState extends State<ShopDetail> {
               thickness: 1,
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 5),
 
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
@@ -128,7 +124,7 @@ class _ShopDetailState extends State<ShopDetail> {
               ),
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 5),
 
             // Add Product Button
             // TODO: Handle Create Product
@@ -150,7 +146,7 @@ class _ShopDetailState extends State<ShopDetail> {
               ),
             )),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 5),
 
             // List of Products
             Expanded(
