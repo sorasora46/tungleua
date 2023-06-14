@@ -506,8 +506,9 @@ class _ManageStoreState extends State<ManageStore> {
                                                 child: RoundedImage(
                                                     image: base64Decode(
                                                         imageBytes!),
-                                                    removeImage:
-                                                        handleRemoveImage))
+                                                    removeImage: isEditable
+                                                        ? handleRemoveImage
+                                                        : null))
                                         ]),
                                       ),
                                       const SizedBox(height: 10),
@@ -541,7 +542,6 @@ class _ManageStoreState extends State<ManageStore> {
                                     const SizedBox(width: 10),
 
                                     // Save Button
-                                    // TODO: Implement Update Store
                                     Container(
                                       margin: const EdgeInsets.symmetric(
                                           horizontal: 0, vertical: 30),
