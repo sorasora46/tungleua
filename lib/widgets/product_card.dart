@@ -10,6 +10,9 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
       elevation: 4,
       clipBehavior: Clip.antiAliasWithSaveLayer,
       child: SizedBox(
@@ -18,13 +21,28 @@ class ProductCard extends StatelessWidget {
           children: <Widget>[
             // Product Title + Detail
             Expanded(
-              child: Column(children: <Widget>[
-                Row(children: <Widget>[
-                  Text(product.title),
-                  Text(product.description)
-                ]),
-                Text(product.price.toString())
-              ]),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(product.title,
+                                style: const TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w500)),
+                            const SizedBox(height: 8),
+                            Text(product.description,
+                                style: const TextStyle(
+                                    fontSize: 12, fontWeight: FontWeight.w300))
+                          ]),
+                      Text('฿ ${product.price}',
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w500))
+                    ]),
+              ),
             ),
 
             // Product Image
