@@ -134,7 +134,8 @@ class _ShopDetailState extends State<ShopDetail> {
                 Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const CreateProduct()))
+                            builder: (context) =>
+                                CreateProduct(storeId: widget.store!.id)))
                     .then((_) => setState(() {}));
               },
               color: Colors.grey,
