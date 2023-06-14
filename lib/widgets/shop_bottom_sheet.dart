@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tungleua/models/store.dart';
 import 'package:tungleua/pages/shop_detail.dart';
 import 'package:tungleua/services/store_service.dart';
+import 'package:tungleua/widgets/images_gallery.dart';
 
 class ShopBottomSheet extends StatefulWidget {
   const ShopBottomSheet({Key? key}) : super(key: key);
@@ -12,9 +13,6 @@ class ShopBottomSheet extends StatefulWidget {
 }
 
 class _ShopBottomSheetState extends State<ShopBottomSheet> {
-  final shopPic =
-      'https://scontent.fbkk5-5.fna.fbcdn.net/v/t39.30808-6/240585651_972435579980123_8072977601646520572_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=e3f864&_nc_eui2=AeFX_8K7-vKC5SlN1CIzX3o1YjiUm-tYyBFiOJSb61jIEUlPRTmC-8U4KFYqVxBEc5BpybJcgdnaLje_ngBUdcHo&_nc_ohc=A0upwk9UygEAX-MWT_L&_nc_ht=scontent.fbkk5-5.fna&oh=00_AfAyd3GTlDufsbsQOdb_eEufqZ0OCNCH_8wAB6nR4ZMN0g&oe=648242C5';
-
   Store? store;
 
   @override
@@ -81,43 +79,10 @@ class _ShopBottomSheetState extends State<ShopBottomSheet> {
               const SizedBox(height: 20),
 
               // Pictures of shop's products
-              // TODO: Handle render images
-              Center(
-                child: Row(children: <Widget>[
-                  SizedBox(
-                    height: 150,
-                    width: 100,
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8.0),
-                        child: Image.network(shopPic, fit: BoxFit.cover)),
-                  ),
-                  const SizedBox(width: 10),
-                  Column(children: <Widget>[
-                    SizedBox(
-                      height: 70,
-                      width: 100,
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: Image.network(shopPic, fit: BoxFit.cover)),
-                    ),
-                    const SizedBox(height: 10),
-                    SizedBox(
-                      height: 70,
-                      width: 100,
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: Image.network(shopPic, fit: BoxFit.cover)),
-                    ),
-                  ]),
-                  const SizedBox(width: 10),
-                  SizedBox(
-                    height: 150,
-                    width: 100,
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8.0),
-                        child: Image.network(shopPic, fit: BoxFit.cover)),
-                  ),
-                ]),
+              // TODO: Handle render product images
+              // TODO: Handle create product
+              const Center(
+                child: ImagesGallery(images: []),
               )
             ]),
       ),
