@@ -24,8 +24,11 @@ class StoreService {
     if (response.statusCode != 200) {
       return null;
     }
-    final data = response.data as List<dynamic>;
-    final products = data.map((product) => Product.fromJSON(product)).toList();
+    final data = response.data as Map<String, dynamic>;
+    final rawProducts = data['products'] as List<dynamic>;
+    final products = rawProducts
+        .map((product) => Product.fromJSON(product as Map<String, dynamic>))
+        .toList();
 
     return products;
   }
