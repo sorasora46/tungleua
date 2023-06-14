@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:tungleua/models/store.dart';
 import 'package:tungleua/pages/create_product.dart';
 
-// TODO: Fetch data for Shop Detail
 // TODO: Render page based on role of user (Customer, Shop's owner)
 class ShopDetail extends StatefulWidget {
-  const ShopDetail({Key? key}) : super(key: key);
+  const ShopDetail({Key? key, required this.store}) : super(key: key);
+  final Store? store;
 
   @override
   State<ShopDetail> createState() => _ShopDetailState();

@@ -43,7 +43,7 @@ class _ShopBottomSheetState extends State<ShopBottomSheet> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const ShopDetail()));
+                          builder: (context) => ShopDetail(store: store)));
                 },
                 child: Text(
                   store?.name ?? "",
