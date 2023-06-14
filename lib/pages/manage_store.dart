@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -43,8 +42,8 @@ class _ManageStoreState extends State<ManageStore> {
   bool isClickValidate = false;
   bool isEditable = false;
 
-  List<String>? images = [];
-  List<String>? originalImages = [];
+  String? imageBytes;
+  File? image;
 
   void handleEditable() {
     setState(() {
@@ -65,37 +64,24 @@ class _ManageStoreState extends State<ManageStore> {
 
   Future<void> handleImagePicker() async {
     try {
-      final pickedImages = await imgPicker.pickMultiImage();
-      if (pickedImages.isEmpty) return;
-
-      if (images!.length + pickedImages.length > 4) {
-        if (mounted) {
-          showCustomSnackBar(
-              context, "Maximum of 4 pictures", SnackBarVariant.error);
-        }
-        return;
-      }
-
-      final List<String> tempArr = [];
-      for (var imgFile in pickedImages) {
-        final file = File(imgFile.path);
-        final imageBytes = await file.readAsBytes();
-        tempArr.add(base64Encode(imageBytes));
-      }
-
+      final image = await imgPicker.pickImage(source: ImageSource.gallery);
+      if (image == null) return;
+      final file = File(image.path);
+      final bytes = await file.readAsBytes();
       setState(() {
-        images!.addAll(tempArr);
+        this.image = file;
+        imageBytes = base64Encode(bytes);
       });
     } catch (e) {
       debugPrint('Image picker error: $e');
-      showCustomSnackBar(
-          context, "Error picking images", SnackBarVariant.error);
+      showCustomSnackBar(context, "Error picking image", SnackBarVariant.error);
     }
   }
 
-  void handleRemoveImage(int index) {
+  void handleRemoveImage() {
     setState(() {
-      images!.removeAt(index);
+      image = null;
+      imageBytes = null;
     });
   }
 
@@ -209,7 +195,7 @@ class _ManageStoreState extends State<ManageStore> {
     setState(() {
       isClickValidate = true;
     });
-    if (editStoreFormKey.currentState!.validate() && images!.isNotEmpty) {
+    if (editStoreFormKey.currentState!.validate() && imageBytes != null) {
       final Map<String, dynamic> updates = {
         'name': storeNameControlller.text,
         'contact': contactController.text,
@@ -218,6 +204,7 @@ class _ManageStoreState extends State<ManageStore> {
         'latitude': locationController.text.split(',')[0].trim(),
         'longitude': locationController.text.split(',')[1].trim(),
         'description': descriptionController.text,
+        'image': imageBytes!,
       };
 
       final isSuccess =
@@ -245,10 +232,8 @@ class _ManageStoreState extends State<ManageStore> {
               locationController.text =
                   '${store.latitude}, ${store.longtitude}';
               descriptionController.text = store.description;
-              images =
-                  store.images.map((image) => base64Encode(image)).toList();
+              imageBytes = store.image;
             }));
-    originalImages = List<String>.from(images!);
   }
 
   @override
@@ -479,7 +464,7 @@ class _ManageStoreState extends State<ManageStore> {
                                         CrossAxisAlignment.start,
                                     children: <Widget>[
                                       const Text(
-                                          'Upload photos of your Store (maximum of 4)'),
+                                          'Upload a photo of your Store'),
                                       const SizedBox(height: 10),
                                       SingleChildScrollView(
                                         scrollDirection: Axis.horizontal,
@@ -490,7 +475,7 @@ class _ManageStoreState extends State<ManageStore> {
                                                   : null,
                                               child: DottedBorder(
                                                   color: isClickValidate &&
-                                                          images!.isEmpty
+                                                          imageBytes == null
                                                       ? Colors.red
                                                       : Colors.black,
                                                   borderType: BorderType.RRect,
@@ -509,37 +494,26 @@ class _ManageStoreState extends State<ManageStore> {
                                                             Icons
                                                                 .cloud_download,
                                                             color: isClickValidate &&
-                                                                    images!
-                                                                        .isEmpty
+                                                                    imageBytes ==
+                                                                        null
                                                                 ? Colors.red
                                                                 : Colors.black,
                                                           )))))),
-                                          Row(
-                                              children: images!
-                                                  .asMap()
-                                                  .entries
-                                                  .map((entry) {
-                                            final int index = entry.key;
-                                            final Uint8List image =
-                                                base64Decode(entry.value);
-                                            return Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 10),
-                                              child: RoundedImage(
-                                                image: image,
-                                                index: index,
-                                                removeImage: isEditable
-                                                    ? handleRemoveImage
-                                                    : null,
-                                              ),
-                                            );
-                                          }).toList()),
+                                          if (imageBytes != null)
+                                            Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 10),
+                                                child: RoundedImage(
+                                                    image: base64Decode(
+                                                        imageBytes!),
+                                                    removeImage:
+                                                        handleRemoveImage))
                                         ]),
                                       ),
                                       const SizedBox(height: 10),
-                                      isClickValidate && images!.isEmpty
+                                      isClickValidate && imageBytes == null
                                           ? const Text(
-                                              'Please upload pictures of your Store.',
+                                              'Please upload a picture of your Store.',
                                               style:
                                                   TextStyle(color: Colors.red))
                                           : Container(),
