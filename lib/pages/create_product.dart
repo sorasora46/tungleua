@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tungleua/styles/button_style.dart';
 import 'package:tungleua/styles/text_form_style.dart';
-import 'package:tungleua/widgets/rounded_image.dart';
 import 'package:tungleua/widgets/show_dialog.dart';
 
 class CreateProduct extends StatefulWidget {
