@@ -161,7 +161,8 @@ class _ShopDetailState extends State<ShopDetail> {
                   scrollDirection: Axis.vertical,
                   children: products
                       .map((product) => Padding(
-                            padding: const EdgeInsets.all(32),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 32, vertical: 5),
                             child: ProductCard(product: product),
                           ))
                       .toList()),
