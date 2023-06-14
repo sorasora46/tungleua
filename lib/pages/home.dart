@@ -18,7 +18,6 @@ class _HomeState extends State<Home> {
   LatLng? currentMapPosition;
   double zoom = 16;
 
-// TODO: Fetch data to ShopBottomSheet
   void handleTapOnMark() {
     if (mounted) {
       showModalBottomSheet(
