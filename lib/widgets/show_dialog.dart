@@ -3,17 +3,20 @@ import 'package:flutter/material.dart';
 class SnackBarVariant {
   static String error = 'error';
   static String success = 'success';
+  static String info = 'info';
 }
 
 /// variant: 'error' | 'success'
 void showCustomSnackBar(BuildContext context, String message, String variant) {
-  Color color = Colors.lightBlue;
+  Color color = Colors.white;
   if (variant == SnackBarVariant.error) {
     color = Colors.red;
   }
-
   if (variant == SnackBarVariant.success) {
     color = Colors.green;
+  }
+  if (variant == SnackBarVariant.info) {
+    color = Colors.lightBlue;
   }
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
