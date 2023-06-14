@@ -46,11 +46,11 @@ class _ShopDetailState extends State<ShopDetail> {
             const SizedBox(height: 20),
 
             // Shop Name
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Text(
-                'John Doe Coffee Shop',
-                style: TextStyle(
+                widget.store!.name,
+                style: const TextStyle(
                   fontSize: 23,
                   fontWeight: FontWeight.w500,
                 ),
@@ -59,12 +59,11 @@ class _ShopDetailState extends State<ShopDetail> {
 
             const SizedBox(height: 5),
 
-            // Shop Address
-            const ListTile(
-              leading: Icon(Icons.location_on_outlined),
+            // Shop Address (Description)
+            ListTile(
+              leading: const Icon(Icons.location_on_outlined),
               iconColor: Colors.black,
-              title: Text(
-                  '115/1 115/2 Pracha Uthit Rd, Bang Mot, Thung Khru, Bangkok 10140'),
+              title: Text(widget.store!.description),
             ),
 
             const Divider(
@@ -74,10 +73,11 @@ class _ShopDetailState extends State<ShopDetail> {
             ),
 
             // Shop open - close
-            const ListTile(
-              leading: Icon(Icons.watch_later_outlined),
+            ListTile(
+              leading: const Icon(Icons.watch_later_outlined),
               iconColor: Colors.black,
-              title: Text('7:00 AM - 8:00 PM'),
+              title: Text(
+                  '${widget.store!.timeOpen} - ${widget.store!.timeClose}'),
             ),
 
             const Divider(
@@ -87,10 +87,10 @@ class _ShopDetailState extends State<ShopDetail> {
             ),
 
             // Shop contact
-            const ListTile(
-              leading: Icon(Icons.language),
+            ListTile(
+              leading: const Icon(Icons.language),
               iconColor: Colors.black,
-              title: Text('www.facebook.com'),
+              title: Text(widget.store!.contact),
             ),
 
             const Divider(
@@ -137,6 +137,7 @@ class _ShopDetailState extends State<ShopDetail> {
             const SizedBox(height: 10),
 
             // List of Products
+            // TODO: Fetch products
             Expanded(
               child: ListView(
                   // https://stackoverflow.com/questions/67555582/flutter-listview-has-gap-at-beginning
