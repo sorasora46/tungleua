@@ -124,6 +124,9 @@ class _CreateProductState extends State<CreateProduct> {
     if (value == null || value.isEmpty) {
       return 'Please enter product price.';
     }
+    if (!RegExp(r'^[1-9]\d*$').hasMatch(value)) {
+      return 'Please enter a\nnon-zero number.';
+    }
     return null;
   }
 
