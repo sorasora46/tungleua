@@ -48,7 +48,6 @@ class _ShopDetailState extends State<ShopDetail> {
             // TODO: Implement Option menu
             IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert))
           ]),
-      // TODO: Create rounded top border
       body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
