@@ -16,7 +16,7 @@ class ProductCard extends StatelessWidget {
       elevation: 4,
       clipBehavior: Clip.antiAliasWithSaveLayer,
       child: SizedBox(
-        height: 100,
+        height: 70,
         child: Row(
           children: <Widget>[
             // Product Title + Detail
