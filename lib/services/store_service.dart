@@ -32,4 +32,15 @@ class StoreService {
 
     return products;
   }
+
+  Future<List<String>?> getStoreProductImages(String storeId) async {
+    final response = await Api().dio.get("/products/images/$storeId");
+    if (response.statusCode != 200) {
+      return null;
+    }
+    final responseJSON = response.data as Map<String, dynamic>;
+    final rawData = responseJSON['images'] as List<dynamic>;
+    final images = rawData.map((data) => data as String).toList();
+    return images;
+  }
 }
