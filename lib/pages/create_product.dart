@@ -71,10 +71,10 @@ class _CreateProductState extends State<CreateProduct> {
       final response = await Api().dio.post('/products/', data: {
         'title': nameController.text,
         'description': detailController.text,
-        'price': priceController.text,
+        'price': int.parse(priceController.text),
         'store_id': widget.storeId,
         'image': base64Encode(imageBytes!),
-        'amount': amountController.text,
+        'amount': int.parse(amountController.text),
       });
 
       if (response.statusCode == 200) {
