@@ -68,6 +68,7 @@ class _CreateProductState extends State<CreateProduct> {
       setState(() {
         disableCreate = true;
       });
+      showCustomSnackBar(context, "Adding Product . . .", SnackBarVariant.info);
       final response = await Api().dio.post('/products/', data: {
         'title': nameController.text,
         'description': detailController.text,
@@ -79,6 +80,8 @@ class _CreateProductState extends State<CreateProduct> {
 
       if (response.statusCode == 200) {
         if (mounted) {
+          showCustomSnackBar(
+              context, "Added to Store!", SnackBarVariant.success);
           Navigator.pop(context, true); // return true if create success
         }
       } else {
