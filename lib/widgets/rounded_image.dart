@@ -10,6 +10,7 @@ class RoundedImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final showRemove = removeImage != null;
     return Stack(
       children: [
         ClipRRect(
@@ -19,28 +20,31 @@ class RoundedImage extends StatelessWidget {
             child: Image.memory(image, fit: BoxFit.cover),
           ),
         ),
-        Positioned(
-          top: -8,
-          right: -8,
-          child: ElevatedButton(
-            onPressed: () => removeImage != null ? removeImage!() : null,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: removeImage != null
-                  ? Colors.red
-                  : Colors.grey, // Set background color to red
-              shape: const CircleBorder(),
-              padding: const EdgeInsets.all(
-                  4), // Adjust the padding to make the button smaller
-              minimumSize:
-                  const Size(24, 24), // Set a minimum size for the button
-            ),
-            child: const Icon(
-              Icons.close,
-              color: Colors.white,
-              size: 16, // Adjust the size of the icon to fit the smaller button
-            ),
-          ),
-        ),
+        showRemove
+            ? Positioned(
+                top: -8,
+                right: -8,
+                child: ElevatedButton(
+                  onPressed: () => removeImage != null ? removeImage!() : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: removeImage != null
+                        ? Colors.red
+                        : Colors.grey, // Set background color to red
+                    shape: const CircleBorder(),
+                    padding: const EdgeInsets.all(
+                        4), // Adjust the padding to make the button smaller
+                    minimumSize:
+                        const Size(24, 24), // Set a minimum size for the button
+                  ),
+                  child: const Icon(
+                    Icons.close,
+                    color: Colors.white,
+                    size:
+                        16, // Adjust the size of the icon to fit the smaller button
+                  ),
+                ),
+              )
+            : Container(),
       ],
     );
   }
