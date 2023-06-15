@@ -39,7 +39,6 @@ class _HomeState extends State<Home> {
           currentLocation =
               LatLng(newLocation.latitude!, newLocation.longitude!);
         });
-        debugPrint('location has changed!\nevent: $newLocation');
       }
     });
   }
