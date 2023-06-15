@@ -13,78 +13,80 @@ class ShopBottomSheet extends StatefulWidget {
 }
 
 class _ShopBottomSheetState extends State<ShopBottomSheet> {
-  Store? store;
-
-  @override
-  void initState() {
-    super.initState();
-    StoreService()
-        .getStoreByUserId(FirebaseAuth.instance.currentUser!.uid)
-        .then((store) => setState(() {
-              this.store = store;
-            }));
-  }
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.5,
       child: Padding(
         padding: const EdgeInsets.all(20),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              const SizedBox(height: 25),
+        child: FutureBuilder(
+            future: StoreService()
+                .getStoreByUserId(FirebaseAuth.instance.currentUser!.uid),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                final Store store = snapshot.data!;
 
-              // Shop Name
-              // TODO: Handle Authorization (Shop's Owner, Shop's Customer)
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ShopDetail(store: store)));
-                },
-                child: Text(
-                  store?.name ?? "",
-                  style: const TextStyle(
-                    fontSize: 23,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
+                return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      const SizedBox(height: 25),
 
-              const SizedBox(height: 10),
+                      // Shop Name
+                      // TODO: Handle Authorization (Shop's Owner, Shop's Customer)
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      ShopDetail(store: store)));
+                        },
+                        child: Text(
+                          store.name,
+                          style: const TextStyle(
+                            fontSize: 23,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
 
-              // Shop open - close
-              Text(
-                '${store?.timeOpen ?? ""} - ${store?.timeClose ?? ""}',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
+                      const SizedBox(height: 10),
 
-              const SizedBox(height: 10),
+                      // Shop open - close
+                      Text(
+                        '${store.timeOpen} - ${store.timeClose}',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
 
-              // Shop Address (Description)
-              Text(
-                store?.description ?? "",
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w300,
-                ),
-              ),
+                      const SizedBox(height: 10),
 
-              const SizedBox(height: 20),
+                      // Shop Address (Description)
+                      Text(
+                        store.description,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
 
-              // Pictures of shop's products
-              // TODO: Handle render product images
-              // TODO: Handle create product
-              const Center(
-                child: ImagesGallery(images: []),
-              )
-            ]),
+                      const SizedBox(height: 30),
+
+                      // Pictures of shop's products
+                      // TODO: Handle render product images
+                      Center(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: ImagesGallery(storeId: store.id),
+                        ),
+                      )
+                    ]);
+              } else {
+                return const Center(child: CircularProgressIndicator());
+              }
+            }),
       ),
     );
   }
