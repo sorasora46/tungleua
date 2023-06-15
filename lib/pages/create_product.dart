@@ -361,7 +361,8 @@ class _CreateProductState extends State<CreateProduct> {
                                   height: 45,
                                   child: FilledButton(
                                       style: filledButton,
-                                      onPressed: handleSubmit,
+                                      onPressed:
+                                          disableCreate ? null : handleSubmit,
                                       child: const Text('Confirm')),
                                 ),
                               ]),
