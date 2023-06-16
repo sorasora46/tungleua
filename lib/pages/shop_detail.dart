@@ -1,14 +1,15 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tungleua/models/product.dart';
 import 'package:tungleua/models/store.dart';
 import 'package:tungleua/pages/create_product.dart';
 import 'package:tungleua/pages/edit_product.dart';
 import 'package:tungleua/services/store_service.dart';
+import 'package:tungleua/widgets/add_product_bottom_sheet.dart';
 import 'package:tungleua/widgets/product_card.dart';
 
-// TODO: Render page based on role of user (Customer, Shop's owner)
 class ShopDetail extends StatefulWidget {
   const ShopDetail({Key? key, required this.store}) : super(key: key);
   final Store? store;
@@ -19,6 +20,36 @@ class ShopDetail extends StatefulWidget {
 
 class _ShopDetailState extends State<ShopDetail> {
   List<Product> products = [];
+  bool isOwner = false;
+
+  final userId = FirebaseAuth.instance.currentUser!.uid;
+
+  void handleTap(Product product) {
+    if (isOwner) {
+      handleOwner(product);
+    } else {
+      handleCustomer(product);
+    }
+  }
+
+  void handleCustomer(Product product) {
+    showModalBottomSheet<void>(
+      context: context,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (context) {
+        return AddProductBottomSheet(product: product);
+      },
+    );
+  }
+
+  void handleOwner(Product product) {
+    Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => EditProduct(productId: product.id)))
+        .then((_) => setState(() {}));
+  }
 
   @override
   void initState() {
@@ -29,6 +60,9 @@ class _ShopDetailState extends State<ShopDetail> {
           .then((products) => setState(() {
                 if (products != null) {
                   this.products = products;
+                  if (widget.store!.userId == userId) {
+                    isOwner = true;
+                  }
                 }
               }));
     }
@@ -123,24 +157,26 @@ class _ShopDetailState extends State<ShopDetail> {
             const SizedBox(height: 5),
 
             // Add Product Button
-            Center(
-                child: MaterialButton(
-              onPressed: () {
-                Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                CreateProduct(storeId: widget.store!.id)))
-                    .then((_) => setState(() {}));
-              },
-              color: Colors.grey,
-              textColor: Colors.black,
-              shape: const CircleBorder(),
-              child: const Icon(
-                Icons.add,
-                size: 24,
-              ),
-            )),
+            isOwner
+                ? Center(
+                    child: MaterialButton(
+                    onPressed: () {
+                      Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      CreateProduct(storeId: widget.store!.id)))
+                          .then((_) => setState(() {}));
+                    },
+                    color: Colors.grey,
+                    textColor: Colors.black,
+                    shape: const CircleBorder(),
+                    child: const Icon(
+                      Icons.add,
+                      size: 24,
+                    ),
+                  ))
+                : Container(),
 
             const SizedBox(height: 5),
 
@@ -156,12 +192,7 @@ class _ShopDetailState extends State<ShopDetail> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 32, vertical: 5),
                             child: GestureDetector(
-                                onTap: () => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => EditProduct(
-                                                productId: product.id)))
-                                    .then((_) => setState(() {})),
+                                onTap: () => handleTap(product),
                                 child: ProductCard(product: product)),
                           ))
                       .toList()),
