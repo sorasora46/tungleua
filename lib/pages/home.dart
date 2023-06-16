@@ -76,6 +76,37 @@ class _HomeState extends State<Home> {
     });
   }
 
+  List<Marker> renderMarkers(
+      List<Map<String, dynamic>> stores, LatLng currentLocation) {
+    final markers = stores
+        .map((store) => Marker(
+            point: LatLng(store['latitude'], store['longitude']),
+            width: 80,
+            height: 80,
+            builder: (context) => GestureDetector(
+                  onTap: () => handleTapOnMark(store['id']),
+                  child: Icon(
+                    Icons.place,
+                    color:
+                        store['user_id'] == userId ? Colors.purple : Colors.red,
+                    size: 32,
+                  ),
+                )))
+        .toList();
+    markers.add(Marker(
+        point: currentLocation,
+        width: 80,
+        height: 80,
+        builder: (context) => GestureDetector(
+              child: const Icon(
+                Icons.place,
+                color: Colors.blue,
+                size: 32,
+              ),
+            )));
+    return markers;
+  }
+
   @override
   void dispose() {
     mapController.dispose();
@@ -103,25 +134,9 @@ class _HomeState extends State<Home> {
                             'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                       ),
                       MarkerLayer(
-                          rotate: true,
-                          markers: stores!
-                              .map((store) => Marker(
-                                  point: LatLng(
-                                      store['latitude'], store['longitude']),
-                                  width: 80,
-                                  height: 80,
-                                  builder: (context) => GestureDetector(
-                                        onTap: () =>
-                                            handleTapOnMark(store['id']),
-                                        child: Icon(
-                                          Icons.place,
-                                          color: store['user_id'] == userId
-                                              ? Colors.purple
-                                              : Colors.red,
-                                          size: 32,
-                                        ),
-                                      )))
-                              .toList()),
+                        rotate: true,
+                        markers: renderMarkers(stores!, currentLocation!),
+                      )
                     ]),
                 Positioned(
                   top: 16,
