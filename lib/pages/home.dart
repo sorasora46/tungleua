@@ -21,6 +21,7 @@ class _HomeState extends State<Home> {
   LatLng? currentLocation;
   LatLng? currentMapPosition;
   double zoom = 16;
+  String? selectedStore;
 
   final userId = FirebaseAuth.instance.currentUser!.uid;
 
@@ -28,6 +29,9 @@ class _HomeState extends State<Home> {
   List<Map<String, dynamic>>? stores;
 
   void handleTapOnMark(String storeId) {
+    setState(() {
+      selectedStore = storeId;
+    });
     if (mounted) {
       showModalBottomSheet(
           context: context,
@@ -35,7 +39,9 @@ class _HomeState extends State<Home> {
               borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
           builder: (context) {
             return ShopBottomSheet(storeId: storeId);
-          });
+          }).then((_) => setState(() {
+            selectedStore = null;
+          }));
     }
   }
 
@@ -87,8 +93,11 @@ class _HomeState extends State<Home> {
                   onTap: () => handleTapOnMark(store['id']),
                   child: Icon(
                     Icons.place,
-                    color:
-                        store['user_id'] == userId ? Colors.purple : Colors.red,
+                    color: store['user_id'] == userId
+                        ? Colors.purple
+                        : selectedStore == store['id']
+                            ? Colors.green
+                            : Colors.red,
                     size: 32,
                   ),
                 )))
