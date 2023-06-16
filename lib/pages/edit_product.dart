@@ -177,6 +177,23 @@ class _EditProductState extends State<EditProduct> {
     }
   }
 
+  Future<void> handleDelete() async {
+    if (product?.id != null) {
+      final isSuccess = await ProductService().deleteProductById(product!.id);
+      if (isSuccess) {
+        if (mounted) {
+          showCustomSnackBar(
+              context, "Delete success!", SnackBarVariant.success);
+          Navigator.pop(context);
+        }
+      } else {
+        if (mounted) {
+          showCustomSnackBar(context, "Delete failed!", SnackBarVariant.error);
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -427,6 +444,25 @@ class _EditProductState extends State<EditProduct> {
                                             onPressed: () =>
                                                 Navigator.pop(context),
                                             child: const Text('Cancel')),
+                                      ),
+
+                                      const SizedBox(width: 10),
+
+                                      // Delete Button
+                                      Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 0, vertical: 30),
+                                        height: 45,
+                                        child: FilledButton(
+                                            style: const ButtonStyle(
+                                                foregroundColor:
+                                                    MaterialStatePropertyAll(
+                                                        Colors.white),
+                                                backgroundColor:
+                                                    MaterialStatePropertyAll(
+                                                        Colors.red)),
+                                            onPressed: handleDelete,
+                                            child: const Text('Delete')),
                                       ),
 
                                       const SizedBox(width: 10),
