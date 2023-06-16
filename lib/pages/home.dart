@@ -43,9 +43,14 @@ class _HomeState extends State<Home> {
     }
   }
 
-  Future<void> initCurrentLocation() async {
+  Future<void> initMap() async {
     final locationData = await location.getLocation();
     currentLocation = LatLng(locationData.latitude!, locationData.longitude!);
+    await StoreService()
+        .populateMap(locationData.latitude!, locationData.longitude!)
+        .then((stores) => setState(() {
+              this.stores = stores;
+            }));
     location.onLocationChanged.listen((newLocation) {
       if (mounted) {
         setState(() {
@@ -65,12 +70,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    initCurrentLocation();
-    StoreService()
-        .populateMap(13.7377383, 100.5892962)
-        .then((stores) => setState(() {
-              this.stores = stores;
-            }));
+    initMap();
   }
 
   List<Marker> renderMarkers(
