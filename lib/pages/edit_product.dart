@@ -25,6 +25,7 @@ class _EditProductState extends State<EditProduct> {
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
   final priceController = TextEditingController();
+  final amountController = TextEditingController();
 
   final ImagePicker imgPicker = ImagePicker();
 
@@ -65,7 +66,20 @@ class _EditProductState extends State<EditProduct> {
 
   String? priceValidator(value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter your product price.';
+      return 'Please enter product price.';
+    }
+    if (!RegExp(r'^[1-9]\d*$').hasMatch(value)) {
+      return 'Please enter a\nnon-zero number.';
+    }
+    return null;
+  }
+
+  String? amountValidator(value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter\nproduct amount.';
+    }
+    if (!RegExp(r'^[1-9]\d*$').hasMatch(value)) {
+      return 'Please enter a\nnon-zero number.';
     }
     return null;
   }
@@ -108,6 +122,7 @@ class _EditProductState extends State<EditProduct> {
     nameController.dispose();
     descriptionController.dispose();
     priceController.dispose();
+    amountController.dispose();
     super.dispose();
   }
 
@@ -121,6 +136,7 @@ class _EditProductState extends State<EditProduct> {
               nameController.text = product!.title;
               descriptionController.text = product.description;
               priceController.text = product.price.toString();
+              amountController.text = product.amount.toString();
               imageBytes = product.image;
             }));
   }
@@ -138,26 +154,26 @@ class _EditProductState extends State<EditProduct> {
         isEditable = false;
       });
 
-      // final Map<String, dynamic> updates = {
-      //   'name': storeNameControlller.text,
-      //   'contact': contactController.text,
-      //   'time_open': timeOpenController.text,
-      //   'time_close': timeCloseController.text,
-      //   'latitude': locationController.text.split(',')[0].trim(),
-      //   'longitude': locationController.text.split(',')[1].trim(),
-      //   'description': descriptionController.text,
-      //   'image': imageBytes!,
-      // };
+      final Map<String, dynamic> updates = {
+        'title': nameController.text,
+        'description': descriptionController.text,
+        'price': int.parse(priceController.text),
+        'image': imageBytes!,
+      };
 
-      // final isSuccess =
-      //     await StoreService().updateStoreByStoreId(store!.id, updates);
+      final isSuccess =
+          await ProductService().updateProductById(product!.id, updates);
 
-      // if (isSuccess) {
-      //   if (mounted) {
-      //     showCustomSnackBar(
-      //         context, "Update success!", SnackBarVariant.success);
-      //   }
-      // }
+      if (isSuccess) {
+        if (mounted) {
+          showCustomSnackBar(
+              context, "Update success!", SnackBarVariant.success);
+        }
+      } else {
+        if (mounted) {
+          showCustomSnackBar(context, "Update failed!", SnackBarVariant.error);
+        }
+      }
     }
   }
 
@@ -257,23 +273,70 @@ class _EditProductState extends State<EditProduct> {
 
                                 const SizedBox(height: 20),
 
-                                // Product Price Field
-                                const Text('Price'),
-                                const SizedBox(height: 8),
-                                TextFormField(
-                                  enabled: isEditable,
-                                  onTap: () {},
-                                  keyboardType: TextInputType.text,
-                                  autovalidateMode:
-                                      AutovalidateMode.onUserInteraction,
-                                  controller: priceController,
-                                  validator: priceValidator,
-                                  decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.all(16),
-                                    hintText: 'Price',
-                                    border: formBorder,
-                                  ),
-                                ),
+                                Row(children: <Widget>[
+                                  // Product Price
+                                  Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        const Text('Price'),
+                                        const SizedBox(height: 8),
+                                        SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.5,
+                                            child: TextFormField(
+                                                enabled: isEditable,
+                                                keyboardType:
+                                                    TextInputType.text,
+                                                autovalidateMode:
+                                                    AutovalidateMode
+                                                        .onUserInteraction,
+                                                controller: priceController,
+                                                validator: priceValidator,
+                                                decoration: InputDecoration(
+                                                    suffixIcon:
+                                                        const Icon(Icons.sell),
+                                                    contentPadding:
+                                                        const EdgeInsets.all(
+                                                            16),
+                                                    hintText: 'Product Price',
+                                                    border: formBorder)))
+                                      ]),
+
+                                  const SizedBox(width: 10),
+
+                                  // Product Amount
+                                  Expanded(
+                                      child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                        const Text('Amount'),
+                                        const SizedBox(height: 8),
+                                        SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.5,
+                                            child: TextFormField(
+                                                enabled: isEditable,
+                                                keyboardType:
+                                                    TextInputType.text,
+                                                autovalidateMode:
+                                                    AutovalidateMode
+                                                        .onUserInteraction,
+                                                controller: amountController,
+                                                validator: amountValidator,
+                                                decoration: InputDecoration(
+                                                    contentPadding:
+                                                        const EdgeInsets.all(
+                                                            16),
+                                                    hintText: 'Amount',
+                                                    border: formBorder)))
+                                      ])),
+                                ]),
 
                                 const SizedBox(height: 20),
 
