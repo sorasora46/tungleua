@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tungleua/services/api.dart';
 import 'package:tungleua/services/auth_service.dart';
 import 'package:tungleua/styles/text_form_style.dart';
+import 'package:tungleua/widgets/navigation/bottom_navbar.dart';
 import 'package:tungleua/widgets/show_dialog.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -128,7 +129,7 @@ class _RegisterPageState extends State<RegisterPage> {
         'email': email,
         'phone': phone,
       });
-      final isFound = response.data['isFound'];
+      final isFound = response.data['isFound'] as bool;
 
       if (isFound) {
         if (mounted) {
@@ -138,16 +139,15 @@ class _RegisterPageState extends State<RegisterPage> {
         return;
       }
 
-      final credit = await AuthService()
-          .registerWithEmailAndPassword(email, password, name, phone);
-
-      // error from firebase auth
-      if (credit == null) {
+      try {
+        await AuthService()
+            .registerWithEmailAndPassword(email, password, name, phone);
         if (mounted) {
-          showCustomSnackBar(
-              context, "Firebase Authentication Error", SnackBarVariant.error);
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => const BottomNavbar()));
         }
-        return;
+      } catch (e) {
+        debugPrint(e.toString());
       }
 
       if (mounted) {

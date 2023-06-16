@@ -16,7 +16,7 @@ class AuthService {
       final userCredential = await auth.createUserWithEmailAndPassword(
           email: email, password: password);
       // register with our server
-      final response = await Api().dio.post('/users', data: {
+      final response = await Api().dio.post('/users/', data: {
         'id': userCredential.user?.uid,
         'email': email,
         'password': password,
