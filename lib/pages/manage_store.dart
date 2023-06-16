@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
@@ -43,6 +44,8 @@ class _ManageStoreState extends State<ManageStore> {
 
   String? imageBytes;
   File? image;
+
+  final userId = FirebaseAuth.instance.currentUser!.uid;
 
   void handleEditable() {
     setState(() {
@@ -229,7 +232,7 @@ class _ManageStoreState extends State<ManageStore> {
   @override
   void initState() {
     super.initState();
-    StoreService().getStoreById(store!.id).then((store) => setState(() {
+    StoreService().getStoreUserById(userId).then((store) => setState(() {
           this.store = store;
           storeNameControlller.text = store!.name;
           contactController.text = store.contact;
