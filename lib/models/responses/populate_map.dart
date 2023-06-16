@@ -28,4 +28,9 @@ class PopulateMapResponse {
       userId: json['user_id'] as String,
     );
   }
+
+  @override
+  String toString() {
+    return 'PopulateMapResponse{id: $id, latitude: $latitude, longitude: $longitude, userId: $userId}';
+  }
 }
