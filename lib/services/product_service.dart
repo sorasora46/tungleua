@@ -10,4 +10,13 @@ class ProductService {
     final product = Product.fromJSON(response.data);
     return product;
   }
+
+  Future<bool> updateProductById(String productId, Object updates) async {
+    final response =
+        await Api().dio.put("/products/update/$productId", data: updates);
+    if (response.statusCode == 200) {
+      return true;
+    }
+    return false;
+  }
 }
