@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -18,6 +19,8 @@ class _HomeState extends State<Home> {
   LatLng? currentLocation;
   LatLng? currentMapPosition;
   double zoom = 16;
+
+  final userId = FirebaseAuth.instance.currentUser!.uid;
 
   List<Map<String, dynamic>>? stores;
 
@@ -108,9 +111,11 @@ class _HomeState extends State<Home> {
                                   builder: (context) => GestureDetector(
                                         onTap: () =>
                                             handleTapOnMark(store['id']),
-                                        child: const Icon(
+                                        child: Icon(
                                           Icons.place,
-                                          color: Colors.red,
+                                          color: store['user_id'] == userId
+                                              ? Colors.purple
+                                              : Colors.red,
                                           size: 32,
                                         ),
                                       )))
