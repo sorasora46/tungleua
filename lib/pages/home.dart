@@ -46,7 +46,7 @@ class _HomeState extends State<Home> {
   Future<void> initMap() async {
     final locationData = await location.getLocation();
     currentLocation = LatLng(locationData.latitude!, locationData.longitude!);
-    await StoreService()
+    await StoreService() // wth flutter?!?!? then return future? I have to await for then too?!?!?
         .populateMap(locationData.latitude!, locationData.longitude!)
         .then((stores) => setState(() {
               this.stores = stores;
