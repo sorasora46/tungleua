@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
+import 'package:tungleua/models/responses/populate_map.dart';
 import 'package:tungleua/services/api.dart';
+import 'package:tungleua/services/store_service.dart';
 import 'package:tungleua/widgets/shop_bottom_sheet.dart';
 
 class Home extends StatefulWidget {
@@ -22,6 +24,7 @@ class _HomeState extends State<Home> {
 
   final userId = FirebaseAuth.instance.currentUser!.uid;
 
+  // List<PopulateMapResponse>? stores;
   List<Map<String, dynamic>>? stores;
 
   void handleTapOnMark(String storeId) {
@@ -99,7 +102,6 @@ class _HomeState extends State<Home> {
                         urlTemplate:
                             'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                       ),
-
                       MarkerLayer(
                           rotate: true,
                           markers: stores!
@@ -120,20 +122,6 @@ class _HomeState extends State<Home> {
                                         ),
                                       )))
                               .toList()),
-                      // MarkerLayer(rotate: true, markers: <Marker>[
-                      //   Marker(
-                      //       point: currentLocation!,
-                      //       width: 80,
-                      //       height: 80,
-                      //       builder: (context) => GestureDetector(
-                      //             onTap: handleTapOnMark,
-                      //             child: const Icon(
-                      //               Icons.place,
-                      //               color: Colors.red,
-                      //               size: 32,
-                      //             ),
-                      //           )),
-                      // ]),
                     ]),
                 Positioned(
                   top: 16,
