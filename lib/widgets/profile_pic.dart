@@ -8,7 +8,7 @@ class ProfilePic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return image == null
+    return image == null || image == ''
         ? const CircleAvatar(
             backgroundColor: Colors.green,
             child: Icon(Icons.person, color: Colors.white, size: 100),
