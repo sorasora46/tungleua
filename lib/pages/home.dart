@@ -65,6 +65,7 @@ class _HomeState extends State<Home> {
   void handleMapPositionChange(LatLng position) {
     setState(() {
       currentMapPosition = position;
+      mapController.move(position, currentZoom);
     });
   }
 
