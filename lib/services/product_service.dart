@@ -19,4 +19,12 @@ class ProductService {
     }
     return false;
   }
+
+  Future<bool> deleteProductById(String productId) async {
+    final response = await Api().dio.delete("/products/delete/$productId");
+    if (response.statusCode == 200) {
+      return true;
+    }
+    return false;
+  }
 }
