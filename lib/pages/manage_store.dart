@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
@@ -230,19 +229,16 @@ class _ManageStoreState extends State<ManageStore> {
   @override
   void initState() {
     super.initState();
-    StoreService()
-        .getStoreByUserId(FirebaseAuth.instance.currentUser!.uid)
-        .then((store) => setState(() {
-              this.store = store;
-              storeNameControlller.text = store!.name;
-              contactController.text = store.contact;
-              timeOpenController.text = store.timeOpen;
-              timeCloseController.text = store.timeClose;
-              locationController.text =
-                  '${store.latitude}, ${store.longtitude}';
-              descriptionController.text = store.description;
-              imageBytes = store.image;
-            }));
+    StoreService().getStoreById(store!.id).then((store) => setState(() {
+          this.store = store;
+          storeNameControlller.text = store!.name;
+          contactController.text = store.contact;
+          timeOpenController.text = store.timeOpen;
+          timeCloseController.text = store.timeClose;
+          locationController.text = '${store.latitude}, ${store.longtitude}';
+          descriptionController.text = store.description;
+          imageBytes = store.image;
+        }));
   }
 
   @override
