@@ -21,6 +21,7 @@ class _HomeState extends State<Home> {
   LatLng? currentMapPosition;
   double initZoom = 16;
   double currentZoom = 16;
+  double maxZoom = 18;
   String? selectedStore;
 
   final userId = FirebaseAuth.instance.currentUser!.uid;
@@ -125,12 +126,11 @@ class _HomeState extends State<Home> {
                     mapController: mapController,
                     options: MapOptions(
                         center: currentLocation,
-                        maxZoom: 18,
+                        maxZoom: maxZoom,
                         zoom: initZoom,
                         onMapEvent: (p0) {
                           setState(() {
                             currentZoom = p0.zoom;
-                            print(currentZoom);
                           });
                         },
                         onPositionChanged: (position, _) {
@@ -160,7 +160,7 @@ class _HomeState extends State<Home> {
                     IconButton(
                       onPressed: () {
                         setState(() {
-                          mapController.move(currentLocation!, currentZoom);
+                          mapController.move(currentLocation!, initZoom);
                         });
                       },
                       icon: const Icon(Icons.location_searching),
