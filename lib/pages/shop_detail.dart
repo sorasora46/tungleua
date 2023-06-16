@@ -161,10 +161,11 @@ class _ShopDetailState extends State<ShopDetail> {
                                 horizontal: 32, vertical: 5),
                             child: GestureDetector(
                                 onTap: () => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => EditProduct(
-                                            productId: product.id))),
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => EditProduct(
+                                                productId: product.id)))
+                                    .then((_) => setState(() {})),
                                 child: ProductCard(product: product)),
                           ))
                       .toList()),
