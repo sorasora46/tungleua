@@ -28,7 +28,7 @@ class _HomeState extends State<Home> {
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
           builder: (context) {
-            return const ShopBottomSheet();
+            return ShopBottomSheet(storeId: storeId);
           });
     }
   }

@@ -6,7 +6,8 @@ import 'package:tungleua/services/store_service.dart';
 import 'package:tungleua/widgets/images_gallery.dart';
 
 class ShopBottomSheet extends StatefulWidget {
-  const ShopBottomSheet({Key? key}) : super(key: key);
+  const ShopBottomSheet({Key? key, required this.storeId}) : super(key: key);
+  final String storeId;
 
   @override
   State<ShopBottomSheet> createState() => _ShopBottomSheetState();
@@ -20,8 +21,7 @@ class _ShopBottomSheetState extends State<ShopBottomSheet> {
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: FutureBuilder(
-            future: StoreService()
-                .getStoreByUserId(FirebaseAuth.instance.currentUser!.uid),
+            future: StoreService().getStoreById(widget.storeId),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 final Store store = snapshot.data!;

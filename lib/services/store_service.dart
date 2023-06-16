@@ -3,7 +3,7 @@ import 'package:tungleua/services/api.dart';
 import 'package:tungleua/models/store.dart';
 
 class StoreService {
-  Future<Store?> getStoreByUserId(String uid) async {
+  Future<Store?> getStoreById(String uid) async {
     final response = await Api().dio.get("/stores/find-by-id/$uid");
     if (response.statusCode != 200) return null;
     final store = Store.fromJSON(response.data);
