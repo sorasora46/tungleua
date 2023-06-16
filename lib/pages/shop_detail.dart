@@ -44,11 +44,7 @@ class _ShopDetailState extends State<ShopDetail> {
           // backgroundColor: Colors.transparent,
           backgroundColor: const Color(0x44000000),
           elevation: 0,
-          scrolledUnderElevation: 0,
-          actions: <Widget>[
-            // TODO: Implement Option menu
-            IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert))
-          ]),
+          scrolledUnderElevation: 0),
       body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
