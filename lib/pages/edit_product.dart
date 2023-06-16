@@ -168,6 +168,7 @@ class _EditProductState extends State<EditProduct> {
         if (mounted) {
           showCustomSnackBar(
               context, "Update success!", SnackBarVariant.success);
+          Navigator.pop(context);
         }
       } else {
         if (mounted) {
@@ -461,7 +462,9 @@ class _EditProductState extends State<EditProduct> {
                                                 backgroundColor:
                                                     MaterialStatePropertyAll(
                                                         Colors.red)),
-                                            onPressed: handleDelete,
+                                            onPressed: isEditable
+                                                ? handleDelete
+                                                : null,
                                             child: const Text('Delete')),
                                       ),
 
