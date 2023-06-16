@@ -65,7 +65,6 @@ class _HomeState extends State<Home> {
   void handleMapPositionChange(LatLng position) {
     setState(() {
       currentMapPosition = position;
-      mapController.move(position, currentZoom);
     });
   }
 
@@ -126,10 +125,12 @@ class _HomeState extends State<Home> {
                     mapController: mapController,
                     options: MapOptions(
                         center: currentLocation,
+                        maxZoom: 18,
                         zoom: initZoom,
                         onMapEvent: (p0) {
                           setState(() {
                             currentZoom = p0.zoom;
+                            print(currentZoom);
                           });
                         },
                         onPositionChanged: (position, _) {
@@ -159,7 +160,7 @@ class _HomeState extends State<Home> {
                     IconButton(
                       onPressed: () {
                         setState(() {
-                          mapController.move(currentLocation!, initZoom);
+                          mapController.move(currentLocation!, currentZoom);
                         });
                       },
                       icon: const Icon(Icons.location_searching),
