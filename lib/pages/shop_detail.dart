@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:tungleua/models/product.dart';
 import 'package:tungleua/models/store.dart';
 import 'package:tungleua/pages/create_product.dart';
+import 'package:tungleua/pages/edit_product.dart';
 import 'package:tungleua/services/store_service.dart';
 import 'package:tungleua/widgets/product_card.dart';
 
@@ -158,7 +159,13 @@ class _ShopDetailState extends State<ShopDetail> {
                       .map((product) => Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 32, vertical: 5),
-                            child: ProductCard(product: product),
+                            child: GestureDetector(
+                                onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => EditProduct(
+                                            productId: product.id))),
+                                child: ProductCard(product: product)),
                           ))
                       .toList()),
             ),
