@@ -19,7 +19,8 @@ class _HomeState extends State<Home> {
   final location = Location();
   LatLng? currentLocation;
   LatLng? currentMapPosition;
-  double zoom = 16;
+  double initZoom = 16;
+  double currentZoom = 16;
   String? selectedStore;
 
   final userId = FirebaseAuth.instance.currentUser!.uid;
@@ -124,7 +125,12 @@ class _HomeState extends State<Home> {
                     mapController: mapController,
                     options: MapOptions(
                         center: currentLocation,
-                        zoom: zoom,
+                        zoom: initZoom,
+                        onMapEvent: (p0) {
+                          setState(() {
+                            currentZoom = p0.zoom;
+                          });
+                        },
                         onPositionChanged: (position, _) {
                           handleMapPositionChange(position.center!);
                         }),
@@ -152,7 +158,7 @@ class _HomeState extends State<Home> {
                     IconButton(
                       onPressed: () {
                         setState(() {
-                          mapController.move(currentLocation!, zoom);
+                          mapController.move(currentLocation!, initZoom);
                         });
                       },
                       icon: const Icon(Icons.location_searching),
@@ -161,8 +167,8 @@ class _HomeState extends State<Home> {
                     IconButton(
                       onPressed: () {
                         setState(() {
-                          zoom++;
-                          mapController.move(currentMapPosition!, zoom);
+                          initZoom++;
+                          mapController.move(currentMapPosition!, initZoom);
                         });
                       },
                       icon: const Icon(Icons.add_circle_outline),
@@ -171,8 +177,8 @@ class _HomeState extends State<Home> {
                     IconButton(
                       onPressed: () {
                         setState(() {
-                          zoom--;
-                          mapController.move(currentMapPosition!, zoom);
+                          initZoom--;
+                          mapController.move(currentMapPosition!, initZoom);
                         });
                       },
                       icon: const Icon(Icons.remove_circle_outline),
