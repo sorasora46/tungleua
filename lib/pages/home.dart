@@ -25,8 +25,7 @@ class _HomeState extends State<Home> {
 
   final userId = FirebaseAuth.instance.currentUser!.uid;
 
-  // List<PopulateMapResponse>? stores;
-  List<Map<String, dynamic>>? stores;
+  List<PopulateMapResponse>? stores;
 
   void handleTapOnMark(String storeId) {
     setState(() {
@@ -68,34 +67,27 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     initCurrentLocation();
-    Api()
-        .dio
-        .get(
-            "/stores/populate?offset=1&center_lat=13.7377383&center_long=100.5892962")
-        .then((response) {
-      final result = response.data['stores'] as List<dynamic>;
-      final stores =
-          result.map((data) => data as Map<String, dynamic>).toList();
-      setState(() {
-        this.stores = stores;
-      });
-    });
+    StoreService()
+        .populateMap(13.7377383, 100.5892962)
+        .then((stores) => setState(() {
+              this.stores = stores;
+            }));
   }
 
   List<Marker> renderMarkers(
-      List<Map<String, dynamic>> stores, LatLng currentLocation) {
+      List<PopulateMapResponse> stores, LatLng currentLocation) {
     final markers = stores
         .map((store) => Marker(
-            point: LatLng(store['latitude'], store['longitude']),
+            point: LatLng(store.latitude, store.longitude),
             width: 80,
             height: 80,
             builder: (context) => GestureDetector(
-                  onTap: () => handleTapOnMark(store['id']),
+                  onTap: () => handleTapOnMark(store.id),
                   child: Icon(
                     Icons.place,
-                    color: store['user_id'] == userId
+                    color: store.userId == userId
                         ? Colors.purple
-                        : selectedStore == store['id']
+                        : selectedStore == store.id
                             ? Colors.green
                             : Colors.red,
                     size: 32,
