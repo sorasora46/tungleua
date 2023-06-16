@@ -169,8 +169,8 @@ class _HomeState extends State<Home> {
                     IconButton(
                       onPressed: () {
                         setState(() {
-                          initZoom++;
-                          mapController.move(currentMapPosition!, initZoom);
+                          currentZoom++;
+                          mapController.move(currentMapPosition!, currentZoom);
                         });
                       },
                       icon: const Icon(Icons.add_circle_outline),
@@ -179,8 +179,8 @@ class _HomeState extends State<Home> {
                     IconButton(
                       onPressed: () {
                         setState(() {
-                          initZoom--;
-                          mapController.move(currentMapPosition!, initZoom);
+                          currentZoom--;
+                          mapController.move(currentMapPosition!, currentZoom);
                         });
                       },
                       icon: const Icon(Icons.remove_circle_outline),
