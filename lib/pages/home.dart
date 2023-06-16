@@ -4,7 +4,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:tungleua/models/responses/populate_map.dart';
-import 'package:tungleua/services/api.dart';
 import 'package:tungleua/services/store_service.dart';
 import 'package:tungleua/widgets/shop_bottom_sheet.dart';
 
