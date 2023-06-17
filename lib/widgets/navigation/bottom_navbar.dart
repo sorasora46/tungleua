@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tungleua/pages/home.dart';
+import 'package:tungleua/pages/product_cart.dart';
 import 'package:tungleua/pages/profile.dart';
 
 class BottomNavbar extends StatefulWidget {
@@ -13,7 +14,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
   int selectedIndex = 0;
   final List<Widget> pages = [
     const Home(),
-    const Text('Payment'),
+    const ProductCart(),
     const Text('Notification'),
     const Profile(),
   ];
