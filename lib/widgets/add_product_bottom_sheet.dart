@@ -62,7 +62,8 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
                   FilledButton(
                     style: filledButton,
                     onPressed: handleAddToCart,
-                    child: Text('Add to Cart  ฿${widget.product!.price}'),
+                    child:
+                        Text('Add to Cart  ฿${widget.product!.price * amount}'),
                   ),
                 ],
               ),
