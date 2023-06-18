@@ -1,7 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tungleua/models/product.dart';
 import 'package:tungleua/pages/discount_code.dart';
-import 'package:tungleua/widgets/cart_item.dart';
+import 'package:tungleua/services/cart_service.dart';
+import 'package:tungleua/widgets/cart_item_card.dart';
 
 class ProductCart extends StatefulWidget {
   const ProductCart({Key? key}) : super(key: key);
@@ -11,6 +12,8 @@ class ProductCart extends StatefulWidget {
 }
 
 class _ProductCartState extends State<ProductCart> {
+  final userId = FirebaseAuth.instance.currentUser!.uid;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -25,62 +28,19 @@ class _ProductCartState extends State<ProductCart> {
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-                child: Column(children: <Widget>[
-                  CartItem(
-                      product: Product(
-                          id: "id",
-                          title: "title",
-                          description: "description",
-                          price: 20,
-                          storeId: "storeId",
-                          image: "11114444",
-                          amount: 50)),
-                  CartItem(
-                      product: Product(
-                          id: "id",
-                          title: "title",
-                          description: "description",
-                          price: 20,
-                          storeId: "storeId",
-                          image: "11114444",
-                          amount: 50)),
-                  CartItem(
-                      product: Product(
-                          id: "id",
-                          title: "title",
-                          description: "description",
-                          price: 20,
-                          storeId: "storeId",
-                          image: "11114444",
-                          amount: 50)),
-                  CartItem(
-                      product: Product(
-                          id: "id",
-                          title: "title",
-                          description: "description",
-                          price: 20,
-                          storeId: "storeId",
-                          image: "11114444",
-                          amount: 50)),
-                  CartItem(
-                      product: Product(
-                          id: "id",
-                          title: "title",
-                          description: "description",
-                          price: 20,
-                          storeId: "storeId",
-                          image: "11114444",
-                          amount: 50)),
-                  CartItem(
-                      product: Product(
-                          id: "id",
-                          title: "title",
-                          description: "description",
-                          price: 20,
-                          storeId: "storeId",
-                          image: "11114444",
-                          amount: 50))
-                ]),
+                child: FutureBuilder(
+                    future: CartService().getCartItems(userId),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        final list = snapshot.data;
+                        return Column(
+                            children: list!
+                                .map((item) => CartItemCard(cartItem: item))
+                                .toList());
+                      } else {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                    }),
               ),
             ),
           ),
