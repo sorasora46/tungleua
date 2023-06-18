@@ -22,24 +22,26 @@ class _CartItemCardState extends State<CartItemCard> {
   int? amount;
 
   Future<void> handleIncrease() async {
-    setState(() {
-      // if (amount < widget.product.amount) amount++;
-      if (amount != null) amount = amount! + 1;
-      widget.handleTotalPriceChange(widget.cartItem.price);
-    });
+    if (amount != null && amount! < widget.cartItem.maxAmount) {
+      setState(() {
+        // if (amount < widget.product.amount) amount++;
+        amount = amount! + 1;
+        widget.handleTotalPriceChange(widget.cartItem.price);
+      });
+    }
     await CartService()
         .updateItemInCart(userId, widget.cartItem.productId, amount!);
   }
 
   Future<void> handleDecrease() async {
-    setState(() {
-      if (amount != null) {
-        if (amount! > 1) {
+    if (amount != null) {
+      if (amount! > 1) {
+        setState(() {
           amount = amount! - 1;
           widget.handleTotalPriceChange(-widget.cartItem.price);
-        }
+        });
       }
-    });
+    }
     await CartService()
         .updateItemInCart(userId, widget.cartItem.productId, amount!);
   }
