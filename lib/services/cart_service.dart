@@ -26,4 +26,10 @@ class CartService {
         .dio
         .delete("/carts/delete?user_id=$userId&product_id=$productId");
   }
+
+  Future<void> updateItemInCart(
+      String userId, String productId, int newAmount) async {
+    await Api().dio.put(
+        "/carts/update?user_id=$userId&product_id=$productId&new_amount=$newAmount");
+  }
 }

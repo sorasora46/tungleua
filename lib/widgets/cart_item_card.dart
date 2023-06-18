@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tungleua/models/cart_item.dart';
+import 'package:tungleua/services/cart_service.dart';
 
 class CartItemCard extends StatefulWidget {
   const CartItemCard(
@@ -15,17 +17,21 @@ class CartItemCard extends StatefulWidget {
 }
 
 class _CartItemCardState extends State<CartItemCard> {
+  final userId = FirebaseAuth.instance.currentUser!.uid;
+
   int? amount;
 
-  void handleIncrease() {
+  Future<void> handleIncrease() async {
     setState(() {
       // if (amount < widget.product.amount) amount++;
       if (amount != null) amount = amount! + 1;
       widget.handleTotalPriceChange(widget.cartItem.price);
     });
+    await CartService()
+        .updateItemInCart(userId, widget.cartItem.productId, amount!);
   }
 
-  void handleDecrease() {
+  Future<void> handleDecrease() async {
     setState(() {
       if (amount != null) {
         if (amount! > 1) {
@@ -34,6 +40,8 @@ class _CartItemCardState extends State<CartItemCard> {
         }
       }
     });
+    await CartService()
+        .updateItemInCart(userId, widget.cartItem.productId, amount!);
   }
 
   @override
