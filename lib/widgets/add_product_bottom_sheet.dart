@@ -32,6 +32,9 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
 
   Future<void> handleAddToCart() async {
     await CartService().addItemToCart(userId, widget.product!.id, amount);
+    if (mounted) {
+      Navigator.pop(context);
+    }
   }
 
   @override
