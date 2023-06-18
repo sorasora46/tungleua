@@ -160,7 +160,7 @@ class _HomeState extends State<Home> {
                     IconButton(
                       onPressed: () {
                         setState(() {
-                          mapController.move(currentLocation!, initZoom);
+                          mapController.move(currentLocation!, currentZoom);
                         });
                       },
                       icon: const Icon(Icons.location_searching),
