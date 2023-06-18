@@ -4,6 +4,7 @@ import 'package:tungleua/models/cart_item.dart';
 import 'package:tungleua/pages/discount_code.dart';
 import 'package:tungleua/services/cart_service.dart';
 import 'package:tungleua/widgets/cart_item_card.dart';
+import 'package:tungleua/widgets/show_dialog.dart';
 
 class ProductCart extends StatefulWidget {
   const ProductCart({Key? key}) : super(key: key);
@@ -35,6 +36,13 @@ class _ProductCartState extends State<ProductCart> {
     });
   }
 
+  Future<void> handleDeleteItem(String userId, String productId) async {
+    await CartService().deleteItemFromCart(userId, productId);
+    if (mounted) {
+      showCustomSnackBar(context, 'Deleted', SnackBarVariant.success);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -46,18 +54,34 @@ class _ProductCartState extends State<ProductCart> {
         body: Column(children: <Widget>[
           Expanded(
             child: SingleChildScrollView(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-                child: Column(
-                  children: items == null
-                      ? [const Center(child: CircularProgressIndicator())]
-                      : items!
-                          .map((item) => CartItemCard(
-                              cartItem: item,
-                              handleTotalPriceChange: handleTotalPriceChange))
-                          .toList(),
-                ),
+              child: Column(
+                children: items == null
+                    ? [const Center(child: CircularProgressIndicator())]
+                    : items!
+                        .map((item) => Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Dismissible(
+                                key: Key(item.productId),
+                                direction: DismissDirection.endToStart,
+                                onDismissed: (_) =>
+                                    handleDeleteItem(userId, item.productId),
+                                background: Container(
+                                  alignment: Alignment.centerRight,
+                                  color: Colors.red,
+                                  child: const Center(
+                                      child: Text('DELETE',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w500))),
+                                ),
+                                child: CartItemCard(
+                                    cartItem: item,
+                                    handleTotalPriceChange:
+                                        handleTotalPriceChange),
+                              ),
+                            ))
+                        .toList(),
               ),
             ),
           ),

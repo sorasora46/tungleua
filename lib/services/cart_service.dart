@@ -20,4 +20,10 @@ class CartService {
         .toList();
     return items;
   }
+
+  Future<void> deleteItemFromCart(String userId, String productId) async {
+    await Api()
+        .dio
+        .delete("/carts/delete?user_id=$userId&product_id=$productId");
+  }
 }
