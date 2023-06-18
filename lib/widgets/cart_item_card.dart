@@ -1,30 +1,40 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:tungleua/models/product.dart';
-import 'package:tungleua/styles/button_style.dart';
+import 'package:tungleua/models/cart_item.dart';
 
-class CartItem extends StatefulWidget {
-  const CartItem({Key? key, required this.product}) : super(key: key);
-  final Product product;
+class CartItemCard extends StatefulWidget {
+  const CartItemCard({Key? key, required this.cartItem}) : super(key: key);
+  final CartItem cartItem;
 
   @override
-  State<CartItem> createState() => _CartItemState();
+  State<CartItemCard> createState() => _CartItemCardState();
 }
 
-class _CartItemState extends State<CartItem> {
-  int amount = 1;
+class _CartItemCardState extends State<CartItemCard> {
+  int? amount;
 
   void handleIncrease() {
     setState(() {
-      if (amount < widget.product.amount) amount++;
+      // if (amount < widget.product.amount) amount++;
+      if (amount != null) amount = amount! + 1;
     });
   }
 
   void handleDecrease() {
     setState(() {
-      if (amount > 1) amount--;
+      if (amount != null) {
+        if (amount! > 1) {
+          amount = amount! - 1;
+        }
+      }
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    amount = widget.cartItem.amount;
   }
 
   @override
@@ -49,7 +59,7 @@ class _CartItemState extends State<CartItem> {
                       Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text(widget.product.title,
+                            Text(widget.cartItem.title,
                                 style: const TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.w500)),
                             const SizedBox(height: 8),
@@ -70,7 +80,7 @@ class _CartItemState extends State<CartItem> {
                               ],
                             )
                           ]),
-                      Text('฿ ${widget.product.price}',
+                      Text('฿ ${widget.cartItem.price * amount!}',
                           style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.w500))
                     ]),
@@ -78,13 +88,13 @@ class _CartItemState extends State<CartItem> {
             ),
 
             // Product Image
-            // AspectRatio(
-            //   aspectRatio: 1.1,
-            //   child: Image.memory(
-            //     base64Decode(widget.product.image),
-            //     fit: BoxFit.fill,
-            //   ),
-            // )
+            AspectRatio(
+              aspectRatio: 0.7,
+              child: Image.memory(
+                base64Decode(widget.cartItem.image),
+                fit: BoxFit.cover,
+              ),
+            )
           ],
         ),
       ),
