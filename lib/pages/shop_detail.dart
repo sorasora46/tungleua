@@ -1,64 +1,111 @@
-import 'package:flutter/material.dart';
-import 'package:tungleua/pages/create_product.dart';
+import 'dart:convert';
 
-// TODO: Fetch data for Shop Detail
-// TODO: Render page based on role of user (Customer, Shop's owner)
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:tungleua/models/product.dart';
+import 'package:tungleua/models/store.dart';
+import 'package:tungleua/pages/create_product.dart';
+import 'package:tungleua/pages/edit_product.dart';
+import 'package:tungleua/services/store_service.dart';
+import 'package:tungleua/widgets/add_product_bottom_sheet.dart';
+import 'package:tungleua/widgets/product_card.dart';
+
 class ShopDetail extends StatefulWidget {
-  const ShopDetail({Key? key}) : super(key: key);
+  const ShopDetail({Key? key, required this.store}) : super(key: key);
+  final Store? store;
 
   @override
   State<ShopDetail> createState() => _ShopDetailState();
 }
 
 class _ShopDetailState extends State<ShopDetail> {
-  final shopPic =
-      'https://scontent.fbkk5-5.fna.fbcdn.net/v/t39.30808-6/240585651_972435579980123_8072977601646520572_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=e3f864&_nc_eui2=AeFX_8K7-vKC5SlN1CIzX3o1YjiUm-tYyBFiOJSb61jIEUlPRTmC-8U4KFYqVxBEc5BpybJcgdnaLje_ngBUdcHo&_nc_ohc=A0upwk9UygEAX-MWT_L&_nc_ht=scontent.fbkk5-5.fna&oh=00_AfAyd3GTlDufsbsQOdb_eEufqZ0OCNCH_8wAB6nR4ZMN0g&oe=648242C5';
+  List<Product> products = [];
+  bool isOwner = false;
+
+  final userId = FirebaseAuth.instance.currentUser!.uid;
+
+  void handleTap(Product product) {
+    if (isOwner) {
+      handleOwner(product);
+    } else {
+      handleCustomer(product);
+    }
+  }
+
+  void handleCustomer(Product product) {
+    showModalBottomSheet<void>(
+      context: context,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (context) {
+        return AddProductBottomSheet(product: product);
+      },
+    );
+  }
+
+  void handleOwner(Product product) {
+    Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => EditProduct(productId: product.id)))
+        .then((_) => setState(() {}));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.store != null) {
+      StoreService()
+          .getProductsFromStoreId(widget.store!.id)
+          .then((products) => setState(() {
+                if (products != null) {
+                  this.products = products;
+                  if (widget.store!.userId == userId) {
+                    isOwner = true;
+                  }
+                }
+              }));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        surfaceTintColor: Colors.transparent,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        actions: <Widget>[
-          IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert))
-        ],
-      ),
-      // TODO: Create rounded top border
+          iconTheme: const IconThemeData(color: Colors.white),
+          surfaceTintColor: Colors.transparent,
+          // backgroundColor: Colors.transparent,
+          backgroundColor: const Color(0x44000000),
+          elevation: 0,
+          scrolledUnderElevation: 0),
       body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             // Shop's picture
             SizedBox(
-                height: 225,
+                height: 200,
                 width: double.infinity,
-                child: Image.network(shopPic, fit: BoxFit.cover)),
-
-            const SizedBox(height: 20),
+                child: Image.memory(base64Decode(widget.store!.image),
+                    fit: BoxFit.cover)),
 
             // Shop Name
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Text(
-                'John Doe Coffee Shop',
-                style: TextStyle(
+                widget.store!.name,
+                style: const TextStyle(
                   fontSize: 23,
                   fontWeight: FontWeight.w500,
                 ),
               ),
             ),
 
-            const SizedBox(height: 5),
-
-            // Shop Address
-            const ListTile(
-              leading: Icon(Icons.location_on_outlined),
+            // Shop Address (Description)
+            ListTile(
+              leading: const Icon(Icons.location_on_outlined),
               iconColor: Colors.black,
-              title: Text(
-                  '115/1 115/2 Pracha Uthit Rd, Bang Mot, Thung Khru, Bangkok 10140'),
+              title: Text(widget.store!.description),
             ),
 
             const Divider(
@@ -68,10 +115,11 @@ class _ShopDetailState extends State<ShopDetail> {
             ),
 
             // Shop open - close
-            const ListTile(
-              leading: Icon(Icons.watch_later_outlined),
+            ListTile(
+              leading: const Icon(Icons.watch_later_outlined),
               iconColor: Colors.black,
-              title: Text('7:00 AM - 8:00 PM'),
+              title: Text(
+                  '${widget.store!.timeOpen} - ${widget.store!.timeClose}'),
             ),
 
             const Divider(
@@ -81,10 +129,10 @@ class _ShopDetailState extends State<ShopDetail> {
             ),
 
             // Shop contact
-            const ListTile(
-              leading: Icon(Icons.language),
+            ListTile(
+              leading: const Icon(Icons.language),
               iconColor: Colors.black,
-              title: Text('www.facebook.com'),
+              title: Text(widget.store!.contact),
             ),
 
             const Divider(
@@ -93,7 +141,7 @@ class _ShopDetailState extends State<ShopDetail> {
               thickness: 1,
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 5),
 
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
@@ -106,28 +154,31 @@ class _ShopDetailState extends State<ShopDetail> {
               ),
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 5),
 
             // Add Product Button
-            // TODO: Handle Create Product
-            Center(
-                child: MaterialButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const CreateProduct()));
-              },
-              color: Colors.grey,
-              textColor: Colors.black,
-              shape: const CircleBorder(),
-              child: const Icon(
-                Icons.add,
-                size: 24,
-              ),
-            )),
+            isOwner
+                ? Center(
+                    child: MaterialButton(
+                    onPressed: () {
+                      Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      CreateProduct(storeId: widget.store!.id)))
+                          .then((_) => setState(() {}));
+                    },
+                    color: Colors.grey,
+                    textColor: Colors.black,
+                    shape: const CircleBorder(),
+                    child: const Icon(
+                      Icons.add,
+                      size: 24,
+                    ),
+                  ))
+                : Container(),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 5),
 
             // List of Products
             Expanded(
@@ -136,33 +187,15 @@ class _ShopDetailState extends State<ShopDetail> {
                   padding: const EdgeInsets.all(0),
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
-                  // TODO: Create Card for Product
-                  children: const <Widget>[
-                    ListTile(
-                      leading: Icon(Icons.access_alarm),
-                      title: Text('Test'),
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.access_alarm),
-                      title: Text('Test'),
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.access_alarm),
-                      title: Text('Test'),
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.access_alarm),
-                      title: Text('Test'),
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.access_alarm),
-                      title: Text('Test'),
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.access_alarm),
-                      title: Text('Test'),
-                    ),
-                  ]),
+                  children: products
+                      .map((product) => Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 32, vertical: 5),
+                            child: GestureDetector(
+                                onTap: () => handleTap(product),
+                                child: ProductCard(product: product)),
+                          ))
+                      .toList()),
             ),
           ]),
     );

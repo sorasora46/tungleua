@@ -1,28 +1,28 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:tungleua/models/store.dart';
 import 'package:tungleua/pages/pick_location.dart';
-import 'package:tungleua/services/api.dart';
+import 'package:tungleua/services/store_service.dart';
 import 'package:tungleua/styles/button_style.dart';
 import 'package:tungleua/styles/text_form_style.dart';
 import 'package:tungleua/widgets/rounded_image.dart';
 import 'package:tungleua/widgets/show_dialog.dart';
 
-class CreateStore extends StatefulWidget {
-  const CreateStore({Key? key}) : super(key: key);
+class ManageStore extends StatefulWidget {
+  const ManageStore({Key? key}) : super(key: key);
 
   @override
-  State<CreateStore> createState() => _CreateStoreState();
+  State<ManageStore> createState() => _ManageStoreState();
 }
 
-class _CreateStoreState extends State<CreateStore> {
-  final createStoreFormKey = GlobalKey<FormState>();
+class _ManageStoreState extends State<ManageStore> {
+  final editStoreFormKey = GlobalKey<FormState>();
 
   final storeNameControlller = TextEditingController();
   final contactController = TextEditingController(); // WTH is Browser???
@@ -33,15 +33,29 @@ class _CreateStoreState extends State<CreateStore> {
 
   final ImagePicker imgPicker = ImagePicker();
 
+  Store? store;
+
   bool showClearStoreName = false;
   bool showClearContact = false;
   bool showClearLocation = false;
   bool showClearDescription = false;
   bool isClickValidate = false;
-  bool disableCreate = false;
+  bool isEditable = false;
 
+  String? imageBytes;
   File? image;
-  Uint8List? imageBytes;
+
+  final userId = FirebaseAuth.instance.currentUser!.uid;
+
+  void handleEditable() {
+    setState(() {
+      if (isEditable) {
+        isEditable = false;
+      } else {
+        isEditable = true;
+      }
+    });
+  }
 
   void handleSetLocation(LatLng position) {
     setState(() {
@@ -58,7 +72,7 @@ class _CreateStoreState extends State<CreateStore> {
       final bytes = await file.readAsBytes();
       setState(() {
         this.image = file;
-        imageBytes = bytes;
+        imageBytes = base64Encode(bytes);
       });
     } catch (e) {
       debugPrint('Image picker error: $e');
@@ -179,48 +193,68 @@ class _CreateStoreState extends State<CreateStore> {
     return null;
   }
 
-  Future<void> handleSubmit() async {
+  Future<void> handleSave() async {
     setState(() {
       isClickValidate = true;
     });
-    if (createStoreFormKey.currentState!.validate() && imageBytes != null) {
+
+    if (editStoreFormKey.currentState!.validate() && imageBytes != null) {
+      showCustomSnackBar(
+          context, "Updating your Store . . .", SnackBarVariant.info);
+
       setState(() {
-        disableCreate = true;
+        isEditable = false;
       });
-      final response = await Api().dio.post('/stores/', data: {
-        'user_id': FirebaseAuth.instance.currentUser!.uid,
+
+      final Map<String, dynamic> updates = {
         'name': storeNameControlller.text,
         'contact': contactController.text,
         'time_open': timeOpenController.text,
         'time_close': timeCloseController.text,
-        'latitude': double.parse(locationController.text.split(',')[0].trim()),
-        'longitude': double.parse(locationController.text.split(',')[1].trim()),
+        'latitude': locationController.text.split(',')[0].trim(),
+        'longitude': locationController.text.split(',')[1].trim(),
         'description': descriptionController.text,
-        'image': base64Encode(imageBytes!),
-      });
+        'image': imageBytes!,
+      };
 
-      if (response.statusCode == 200) {
-        if (mounted) {
-          Navigator.pop(context, true); // return true if create success
-        }
-      } else {
+      final isSuccess =
+          await StoreService().updateStoreByStoreId(store!.id, updates);
+
+      if (isSuccess) {
         if (mounted) {
           showCustomSnackBar(
-              context, "Error Creating Store", SnackBarVariant.error);
+              context, "Update success!", SnackBarVariant.success);
         }
       }
-    } else {
-      setState(() {
-        disableCreate = false;
-      });
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    StoreService().getStoreUserById(userId).then((store) => setState(() {
+          this.store = store;
+          storeNameControlller.text = store!.name;
+          contactController.text = store.contact;
+          timeOpenController.text = store.timeOpen;
+          timeCloseController.text = store.timeClose;
+          locationController.text = '${store.latitude}, ${store.longtitude}';
+          descriptionController.text = store.description;
+          imageBytes = store.image;
+        }));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Store'),
+        title: const Text('Edit Store'),
+        actions: <Widget>[
+          IconButton(
+            onPressed: handleEditable,
+            icon: Icon(isEditable ? Icons.edit_off : Icons.edit),
+          )
+        ],
       ), // Don't remove AppBar
       body: GestureDetector(
         onTap: () {
@@ -236,7 +270,7 @@ class _CreateStoreState extends State<CreateStore> {
                     child: Padding(
                       padding: const EdgeInsets.all(32),
                       child: Form(
-                        key: createStoreFormKey,
+                        key: editStoreFormKey,
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
@@ -244,6 +278,7 @@ class _CreateStoreState extends State<CreateStore> {
                               const Text('Store Name'),
                               const SizedBox(height: 8),
                               TextFormField(
+                                enabled: isEditable,
                                 keyboardType: TextInputType.name,
                                 autovalidateMode:
                                     AutovalidateMode.onUserInteraction,
@@ -275,6 +310,7 @@ class _CreateStoreState extends State<CreateStore> {
                               const Text('Contact'),
                               const SizedBox(height: 8),
                               TextFormField(
+                                enabled: isEditable,
                                 keyboardType: TextInputType.url,
                                 autovalidateMode:
                                     AutovalidateMode.onUserInteraction,
@@ -313,6 +349,7 @@ class _CreateStoreState extends State<CreateStore> {
                                       const Text('Open'),
                                       const SizedBox(height: 8),
                                       TextFormField(
+                                        enabled: isEditable,
                                         validator: timeOpenValidator,
                                         readOnly: true,
                                         controller: timeOpenController,
@@ -337,6 +374,7 @@ class _CreateStoreState extends State<CreateStore> {
                                       const Text('Close'),
                                       const SizedBox(height: 8),
                                       TextFormField(
+                                        enabled: isEditable,
                                         validator: timeCloseValidator,
                                         readOnly: true,
                                         controller: timeCloseController,
@@ -357,6 +395,7 @@ class _CreateStoreState extends State<CreateStore> {
                               const Text('Location'),
                               const SizedBox(height: 8),
                               TextFormField(
+                                enabled: isEditable,
                                 onTap: () => Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -395,6 +434,7 @@ class _CreateStoreState extends State<CreateStore> {
                               const Text('Description'),
                               const SizedBox(height: 8),
                               TextFormField(
+                                enabled: isEditable,
                                 onTap: () {},
                                 keyboardType: TextInputType.multiline,
                                 maxLines: 5,
@@ -438,7 +478,9 @@ class _CreateStoreState extends State<CreateStore> {
                                         scrollDirection: Axis.horizontal,
                                         child: Row(children: <Widget>[
                                           GestureDetector(
-                                              onTap: handleImagePicker,
+                                              onTap: isEditable
+                                                  ? handleImagePicker
+                                                  : null,
                                               child: DottedBorder(
                                                   color: isClickValidate &&
                                                           imageBytes == null
@@ -470,9 +512,11 @@ class _CreateStoreState extends State<CreateStore> {
                                                 padding: const EdgeInsets.only(
                                                     left: 10),
                                                 child: RoundedImage(
-                                                    image: imageBytes!,
-                                                    removeImage:
-                                                        handleRemoveImage))
+                                                    image: base64Decode(
+                                                        imageBytes!),
+                                                    removeImage: isEditable
+                                                        ? handleRemoveImage
+                                                        : null))
                                         ]),
                                       ),
                                       const SizedBox(height: 10),
@@ -505,17 +549,16 @@ class _CreateStoreState extends State<CreateStore> {
 
                                     const SizedBox(width: 10),
 
-                                    // Confirm Button
+                                    // Save Button
                                     Container(
                                       margin: const EdgeInsets.symmetric(
                                           horizontal: 0, vertical: 30),
                                       height: 45,
                                       child: FilledButton(
                                           style: filledButton,
-                                          onPressed: disableCreate
-                                              ? null
-                                              : handleSubmit,
-                                          child: const Text('Confirm')),
+                                          onPressed:
+                                              isEditable ? handleSave : null,
+                                          child: const Text('Save')),
                                     ),
                                   ]),
                             ]),

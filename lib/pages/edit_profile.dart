@@ -1,16 +1,25 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:tungleua/services/user_service.dart';
 import 'package:tungleua/styles/button_style.dart';
+import 'package:tungleua/widgets/profile_pic.dart';
+import 'package:tungleua/widgets/show_dialog.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile(
       {Key? key,
+      required this.uid,
       required this.name,
       required this.email,
-      required this.profileImage})
+      this.profileImage})
       : super(key: key);
+  final String uid;
   final String name;
   final String email;
-  final String profileImage;
+  final String? profileImage;
 
   @override
   State<EditProfile> createState() => _EditProfileState();
@@ -22,21 +31,66 @@ class _EditProfileState extends State<EditProfile> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
 
+  final ImagePicker imgPicker = ImagePicker();
+
   bool isEditable = false;
+  String? imageString;
+  File? image;
+
+  Future<void> handleImagePicker() async {
+    final image = await imgPicker.pickImage(source: ImageSource.gallery);
+    if (image == null) return;
+    final file = File(image.path);
+    final fileStr = base64Encode(await file.readAsBytes());
+    setState(() {
+      this.image = file;
+      imageString = fileStr;
+    });
+  }
+
+  Future<void> handleSave() async {
+    showCustomSnackBar(
+        context, "Updating your profile . . .", SnackBarVariant.info);
+
+    final Map<String, Object> updates = {'name': nameController.text};
+
+    if (image != null) {
+      updates['image'] = base64Encode(await image!.readAsBytes());
+    }
+
+    final isSuccess = await UserService().updateUserById(widget.uid, updates);
+    if (isSuccess) {
+      if (mounted) {
+        showCustomSnackBar(context, "Update success!", SnackBarVariant.success);
+      }
+      setState(() {
+        isEditable = false;
+      });
+    }
+  }
 
   void setEditable() {
     setState(() {
       if (isEditable) {
-        isEditable = false;
+        handleCancel();
       } else {
         isEditable = true;
       }
     });
   }
 
+  void handleCancel() {
+    setState(() {
+      isEditable = false;
+      nameController.text = widget.name;
+      emailController.text = widget.email;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    imageString = widget.profileImage;
     nameController.text = widget.name;
     emailController.text = widget.email;
   }
@@ -65,80 +119,81 @@ class _EditProfileState extends State<EditProfile> {
           FocusScope.of(context).unfocus();
         },
         child: SafeArea(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Form(
-                key: editProfileFormKey,
-                child: Column(
-                  children: <Widget>[
-                    const SizedBox(height: 30),
-                    // Profile Image
-                    // TODO: Implement image picker
-                    SizedBox(
-                      width: 162.77,
-                      height: 162.77,
-                      child: CircleAvatar(
-                        backgroundImage: NetworkImage(widget.profileImage),
+          child: SingleChildScrollView(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Form(
+                  key: editProfileFormKey,
+                  child: Column(
+                    children: <Widget>[
+                      const SizedBox(height: 30),
+                      // Profile Image
+                      SizedBox(
+                        width: 162.77,
+                        height: 162.77,
+                        child: GestureDetector(
+                            onTap: isEditable ? handleImagePicker : null,
+                            child: ProfilePic(image: imageString)),
                       ),
-                    ),
-                    const SizedBox(height: 30),
 
-                    // Name
-                    TextFormField(
-                      controller: nameController,
-                      enabled: isEditable,
-                      decoration: const InputDecoration(
-                          filled: true,
-                          border: UnderlineInputBorder(),
-                          labelText: "Edit your name"),
-                    ),
+                      const SizedBox(height: 30),
 
-                    const SizedBox(height: 20),
+                      // Name
+                      TextFormField(
+                        controller: nameController,
+                        enabled: isEditable,
+                        decoration: const InputDecoration(
+                            filled: true,
+                            border: UnderlineInputBorder(),
+                            labelText: "Edit your name"),
+                      ),
 
-                    // Email
-                    TextFormField(
-                      controller: emailController,
-                      enabled: isEditable,
-                      decoration: const InputDecoration(
-                          filled: true,
-                          border: UnderlineInputBorder(),
-                          labelText: "Edit your name"),
-                    ),
+                      const SizedBox(height: 20),
 
-                    const SizedBox(height: 20),
+                      // Email
+                      TextFormField(
+                        controller: emailController,
+                        // enabled: isEditable,
+                        enabled: false,
+                        decoration: const InputDecoration(
+                            filled: true,
+                            border: UnderlineInputBorder(),
+                            labelText: "Edit your email"),
+                      ),
 
-                    if (isEditable)
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            // Save Button
-                            // TODO: Save info and send to backend
-                            Container(
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 0, vertical: 30),
-                              height: 45,
-                              child: OutlinedButton(
-                                  style: roundedOutlineButton,
-                                  onPressed: () {},
-                                  child: const Text('Save')),
-                            ),
+                      const SizedBox(height: 20),
 
-                            const SizedBox(width: 10),
+                      if (isEditable)
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              // Cancel Button
+                              Container(
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 0, vertical: 30),
+                                height: 45,
+                                child: OutlinedButton(
+                                    style: roundedOutlineButton,
+                                    onPressed: handleCancel,
+                                    child: const Text('Cancel')),
+                              ),
 
-                            // Cancel Button
-                            // TODO: Turn isEdiable to false and discard all change
-                            Container(
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 0, vertical: 30),
-                              height: 45,
-                              child: FilledButton(
-                                  style: filledButton,
-                                  onPressed: () {},
-                                  child: const Text('Cancel')),
-                            ),
-                          ]),
-                  ],
+                              const SizedBox(width: 10),
+
+                              // Save Button
+                              Container(
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 0, vertical: 30),
+                                height: 45,
+                                child: FilledButton(
+                                    style: filledButton,
+                                    onPressed: handleSave,
+                                    child: const Text('Save')),
+                              ),
+                            ]),
+                    ],
+                  ),
                 ),
               ),
             ),
