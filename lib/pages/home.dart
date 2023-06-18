@@ -109,6 +109,14 @@ class _HomeState extends State<Home> {
     return markers;
   }
 
+  Future<void> handleFetchMarker(double latitude, double longitude) async {
+    await StoreService()
+        .populateMap(latitude, longitude)
+        .then((stores) => setState(() {
+              this.stores = stores;
+            }));
+  }
+
   @override
   void dispose() {
     mapController.dispose();
@@ -131,6 +139,10 @@ class _HomeState extends State<Home> {
                         onMapEvent: (p0) {
                           setState(() {
                             currentZoom = p0.zoom;
+                            if (p0.source == MapEventSource.dragEnd) {
+                              handleFetchMarker(
+                                  p0.center.latitude, p0.center.longitude);
+                            }
                           });
                         },
                         onPositionChanged: (position, _) {
