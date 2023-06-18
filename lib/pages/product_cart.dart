@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tungleua/models/cart_item.dart';
 import 'package:tungleua/pages/discount_code.dart';
 import 'package:tungleua/services/cart_service.dart';
 import 'package:tungleua/widgets/cart_item_card.dart';
@@ -13,6 +14,26 @@ class ProductCart extends StatefulWidget {
 
 class _ProductCartState extends State<ProductCart> {
   final userId = FirebaseAuth.instance.currentUser!.uid;
+
+  List<CartItem>? items;
+  int? totalPrice = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    CartService().getCartItems(userId).then((items) => setState(() {
+          this.items = items;
+          for (int i = 0; i < items!.length; i++) {
+            totalPrice = totalPrice! + (items[i].price * items[i].amount);
+          }
+        }));
+  }
+
+  void handleTotalPriceChange(int price) {
+    setState(() {
+      totalPrice = totalPrice! + price;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,19 +49,13 @@ class _ProductCartState extends State<ProductCart> {
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-                child: FutureBuilder(
-                    future: CartService().getCartItems(userId),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        final list = snapshot.data;
-                        return Column(
-                            children: list!
-                                .map((item) => CartItemCard(cartItem: item))
-                                .toList());
-                      } else {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                    }),
+                child: Column(
+                  children: items == null
+                      ? [const Center(child: CircularProgressIndicator())]
+                      : items!
+                          .map((item) => CartItemCard(cartItem: item))
+                          .toList(),
+                ),
               ),
             ),
           ),
@@ -89,8 +104,8 @@ class _ProductCartState extends State<ProductCart> {
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        const Text('Total: ฿ ${260}',
-                            style: TextStyle(
+                        Text('Total: ฿ $totalPrice',
+                            style: const TextStyle(
                                 fontSize: 14, fontWeight: FontWeight.w500)),
                         FilledButton(onPressed: () {}, child: const Text('Pay'))
                       ])))
