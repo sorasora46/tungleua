@@ -5,6 +5,7 @@ class CartItem {
   final String title;
   final int price;
   final String image;
+  final int maxAmount;
 
   CartItem({
     required this.userId,
@@ -13,6 +14,7 @@ class CartItem {
     required this.title,
     required this.price,
     required this.image,
+    required this.maxAmount,
   });
 
   Map<String, dynamic> toJSON() {
@@ -23,6 +25,7 @@ class CartItem {
       'title': title,
       'price': price,
       'image': image,
+      'max_amount': maxAmount,
     };
   }
 
@@ -34,6 +37,7 @@ class CartItem {
       title: json['title'] as String,
       price: json['price'] as int,
       image: json['image'] as String,
+      maxAmount: json['max_amount'] as int,
     );
   }
 }
