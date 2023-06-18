@@ -53,7 +53,9 @@ class _ProductCartState extends State<ProductCart> {
                   children: items == null
                       ? [const Center(child: CircularProgressIndicator())]
                       : items!
-                          .map((item) => CartItemCard(cartItem: item))
+                          .map((item) => CartItemCard(
+                              cartItem: item,
+                              handleTotalPriceChange: handleTotalPriceChange))
                           .toList(),
                 ),
               ),

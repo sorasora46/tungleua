@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:tungleua/models/cart_item.dart';
 
 class CartItemCard extends StatefulWidget {
-  const CartItemCard({Key? key, required this.cartItem}) : super(key: key);
+  const CartItemCard(
+      {Key? key, required this.cartItem, required this.handleTotalPriceChange})
+      : super(key: key);
   final CartItem cartItem;
+  final Function(int) handleTotalPriceChange;
 
   @override
   State<CartItemCard> createState() => _CartItemCardState();
@@ -18,6 +21,7 @@ class _CartItemCardState extends State<CartItemCard> {
     setState(() {
       // if (amount < widget.product.amount) amount++;
       if (amount != null) amount = amount! + 1;
+      widget.handleTotalPriceChange(widget.cartItem.price);
     });
   }
 
@@ -26,6 +30,7 @@ class _CartItemCardState extends State<CartItemCard> {
       if (amount != null) {
         if (amount! > 1) {
           amount = amount! - 1;
+          widget.handleTotalPriceChange(-widget.cartItem.price);
         }
       }
     });
