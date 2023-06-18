@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tungleua/models/product.dart';
+import 'package:tungleua/services/cart_service.dart';
 import 'package:tungleua/styles/button_style.dart';
 
 class AddProductBottomSheet extends StatefulWidget {
@@ -12,6 +14,8 @@ class AddProductBottomSheet extends StatefulWidget {
 }
 
 class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
+  final userId = FirebaseAuth.instance.currentUser!.uid;
+
   int amount = 1;
 
   void handleIncrease() {
@@ -24,6 +28,10 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
     setState(() {
       if (amount > 1) amount--;
     });
+  }
+
+  Future<void> handleAddToCart() async {
+    await CartService().addItemToCart(userId, widget.product!.id, amount);
   }
 
   @override
@@ -50,8 +58,8 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
                   const SizedBox(width: 20),
                   FilledButton(
                     style: filledButton,
+                    onPressed: handleAddToCart,
                     child: Text('Add to Cart  ฿${widget.product!.price}'),
-                    onPressed: () => Navigator.pop(context),
                   ),
                 ],
               ),
