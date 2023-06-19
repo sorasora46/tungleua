@@ -78,21 +78,23 @@ class _CartItemCardState extends State<CartItemCard> {
                                 style: const TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.w500)),
                             const SizedBox(height: 8),
-                            Row(
-                              children: <Widget>[
-                                IconButton(
-                                    onPressed: handleDecrease,
-                                    icon: const Icon(Icons.remove)),
-                                const SizedBox(width: 10),
-                                Text(amount.toString(),
-                                    style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500)),
-                                const SizedBox(width: 10),
-                                IconButton(
-                                    onPressed: handleIncrease,
-                                    icon: const Icon(Icons.add)),
-                              ],
+                            Expanded(
+                              child: Row(
+                                children: <Widget>[
+                                  IconButton(
+                                      onPressed: handleDecrease,
+                                      icon: const Icon(Icons.remove)),
+                                  const SizedBox(width: 10),
+                                  Text(amount.toString(),
+                                      style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500)),
+                                  const SizedBox(width: 10),
+                                  IconButton(
+                                      onPressed: handleIncrease,
+                                      icon: const Icon(Icons.add)),
+                                ],
+                              ),
                             )
                           ]),
                       Text('฿ ${widget.cartItem.price * amount!}',
