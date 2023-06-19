@@ -29,3 +29,4 @@ flutter:
 
   assets:
     - .env
+    - assets/images/tungleua_logo.png
