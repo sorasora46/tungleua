@@ -10,7 +10,7 @@ class CartItemCard extends StatefulWidget {
       {Key? key, required this.cartItem, required this.handleTotalPriceChange})
       : super(key: key);
   final CartItem cartItem;
-  final Function(int) handleTotalPriceChange;
+  final Function(double) handleTotalPriceChange;
 
   @override
   State<CartItemCard> createState() => _CartItemCardState();

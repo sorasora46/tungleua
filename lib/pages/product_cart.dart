@@ -18,7 +18,7 @@ class _ProductCartState extends State<ProductCart> {
   final userId = FirebaseAuth.instance.currentUser!.uid;
 
   List<CartItem>? items;
-  int? totalPrice = 0;
+  double? totalPrice = 0;
   Coupon? selectedCoupon;
 
   void handleSelectCoupon(Coupon coupon) {
@@ -32,7 +32,7 @@ class _ProductCartState extends State<ProductCart> {
       if (selectedCoupon != null) {
         return totalPrice! - (totalPrice! * selectedCoupon!.discount);
       }
-      return totalPrice as double;
+      return totalPrice!;
     }
     return 0;
   }
@@ -48,7 +48,7 @@ class _ProductCartState extends State<ProductCart> {
         }));
   }
 
-  void handleTotalPriceChange(int price) {
+  void handleTotalPriceChange(double price) {
     setState(() {
       totalPrice = totalPrice! + price;
     });

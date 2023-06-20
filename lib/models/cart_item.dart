@@ -3,7 +3,7 @@ class CartItem {
   final String productId;
   final int amount;
   final String title;
-  final int price;
+  final double price;
   final String image;
   final int maxAmount;
 
@@ -35,7 +35,7 @@ class CartItem {
       productId: json['product_id'] as String,
       amount: json['amount'] as int,
       title: json['title'] as String,
-      price: json['price'] as int,
+      price: json['price'] as double,
       image: json['image'] as String,
       maxAmount: json['max_amount'] as int,
     );
