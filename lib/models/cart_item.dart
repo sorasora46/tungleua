@@ -30,12 +30,17 @@ class CartItem {
   }
 
   factory CartItem.fromJSON(Map<String, dynamic> json) {
+    final priceJson = json['price'];
+    final castedPrice = priceJson.runtimeType.toString() == 'int'
+        ? (priceJson as int).toDouble()
+        : priceJson as double;
+
     return CartItem(
       userId: json['user_id'] as String,
       productId: json['product_id'] as String,
       amount: json['amount'] as int,
       title: json['title'] as String,
-      price: json['price'] as double,
+      price: castedPrice,
       image: json['image'] as String,
       maxAmount: json['max_amount'] as int,
     );
