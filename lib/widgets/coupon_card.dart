@@ -32,13 +32,17 @@ class _CouponCardState extends State<CouponCard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text('Discount 10%',
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.w500)),
+                        Flexible(
+                          child: Text('Discount 10%',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.w500)),
+                        ),
                         SizedBox(height: 8),
-                        Text('use before: 07/06/23',
-                            style: TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.w300)),
+                        Flexible(
+                          child: Text('use before: 07/06/23',
+                              style: TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.w300)),
+                        ),
                       ]),
                   IconButton(
                       onPressed: () {
