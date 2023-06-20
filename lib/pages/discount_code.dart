@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tungleua/models/coupon.dart';
+import 'package:tungleua/services/coupon_service.dart';
 import 'package:tungleua/styles/button_style.dart';
 import 'package:tungleua/widgets/coupon_card.dart';
 
@@ -10,24 +13,35 @@ class DiscountCode extends StatefulWidget {
 }
 
 class _DiscountCodeState extends State<DiscountCode> {
+  final userId = FirebaseAuth.instance.currentUser!.uid;
+
+  List<Coupon>? coupons;
+
+  @override
+  void initState() {
+    super.initState();
+    CouponService().getCoupons(userId).then((coupons) => setState(() {
+          this.coupons = coupons;
+        }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(title: const Text('Select Code'), centerTitle: true),
         body: Column(children: <Widget>[
-          const Expanded(
+          Expanded(
             child: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-                child: Column(children: <Widget>[
-                  CouponCard(),
-                  CouponCard(),
-                  CouponCard(),
-                  CouponCard(),
-                  CouponCard(),
-                  CouponCard(),
-                ]),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                child: coupons != null
+                    ? Column(
+                        children: coupons!
+                            .map((coupon) => CouponCard(coupon: coupon))
+                            .toList())
+                    : const Center(child: CircularProgressIndicator()),
               ),
             ),
           ),
