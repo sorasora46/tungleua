@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tungleua/models/cart_item.dart';
+import 'package:tungleua/models/coupon.dart';
 import 'package:tungleua/pages/discount_code.dart';
 import 'package:tungleua/services/cart_service.dart';
 import 'package:tungleua/widgets/cart_item_card.dart';
@@ -18,6 +19,23 @@ class _ProductCartState extends State<ProductCart> {
 
   List<CartItem>? items;
   int? totalPrice = 0;
+  Coupon? selectedCoupon;
+
+  void handleSelectCoupon(Coupon coupon) {
+    setState(() {
+      selectedCoupon = coupon;
+    });
+  }
+
+  double calculatePrice() {
+    if (totalPrice != null) {
+      if (selectedCoupon != null) {
+        return totalPrice! - (totalPrice! * selectedCoupon!.discount);
+      }
+      return totalPrice as double;
+    }
+    return 0;
+  }
 
   @override
   void initState() {
@@ -102,19 +120,36 @@ class _ProductCartState extends State<ProductCart> {
                         const Text('Code',
                             style: TextStyle(
                                 fontSize: 14, fontWeight: FontWeight.w500)),
-                        TextButton(
-                            onPressed: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const DiscountCode())),
-                            style: const ButtonStyle(
-                                splashFactory: NoSplash.splashFactory),
-                            child: const Row(children: [
-                              Text('Select Code',
-                                  style: TextStyle(fontSize: 14)),
-                              Icon(Icons.arrow_forward_ios, size: 12)
-                            ]))
+                        selectedCoupon == null
+                            ? TextButton(
+                                onPressed: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => DiscountCode(
+                                            handleSelectCoupon:
+                                                handleSelectCoupon))),
+                                style: const ButtonStyle(
+                                    splashFactory: NoSplash.splashFactory),
+                                child: const Row(children: [
+                                  Text('Select Code',
+                                      style: TextStyle(fontSize: 14)),
+                                  Icon(Icons.arrow_forward_ios, size: 12)
+                                ]))
+                            : TextButton(
+                                onPressed: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => DiscountCode(
+                                            handleSelectCoupon:
+                                                handleSelectCoupon))),
+                                style: const ButtonStyle(
+                                    splashFactory: NoSplash.splashFactory),
+                                child: Row(children: [
+                                  Text(
+                                      'discount ${selectedCoupon!.discount * 100}% (${selectedCoupon!.title})',
+                                      style: const TextStyle(fontSize: 14)),
+                                  const Icon(Icons.arrow_forward_ios, size: 12)
+                                ]))
                       ]))),
 
           // Pay
@@ -130,7 +165,7 @@ class _ProductCartState extends State<ProductCart> {
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text('Total: ฿ $totalPrice',
+                        Text('Total: ฿ ${calculatePrice()}',
                             style: const TextStyle(
                                 fontSize: 14, fontWeight: FontWeight.w500)),
                         FilledButton(onPressed: () {}, child: const Text('Pay'))

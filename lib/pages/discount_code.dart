@@ -2,11 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tungleua/models/coupon.dart';
 import 'package:tungleua/services/coupon_service.dart';
-import 'package:tungleua/styles/button_style.dart';
 import 'package:tungleua/widgets/coupon_card.dart';
 
 class DiscountCode extends StatefulWidget {
-  const DiscountCode({Key? key}) : super(key: key);
+  const DiscountCode({Key? key, required this.handleSelectCoupon})
+      : super(key: key);
+  final Function(Coupon) handleSelectCoupon;
 
   @override
   State<DiscountCode> createState() => _DiscountCodeState();
@@ -16,6 +17,7 @@ class _DiscountCodeState extends State<DiscountCode> {
   final userId = FirebaseAuth.instance.currentUser!.uid;
 
   List<Coupon>? coupons;
+  Coupon? selectedCoupon;
 
   @override
   void initState() {
@@ -39,7 +41,9 @@ class _DiscountCodeState extends State<DiscountCode> {
                 child: coupons != null
                     ? Column(
                         children: coupons!
-                            .map((coupon) => CouponCard(coupon: coupon))
+                            .map((coupon) => CouponCard(
+                                coupon: coupon,
+                                handleSelectCoupon: widget.handleSelectCoupon))
                             .toList())
                     : const Center(child: CircularProgressIndicator()),
               ),
@@ -47,23 +51,23 @@ class _DiscountCodeState extends State<DiscountCode> {
           ),
 
           // Confirm Button
-          Container(
-              decoration: BoxDecoration(
-                  border: Border.symmetric(
-                      vertical: BorderSide.none,
-                      horizontal:
-                          BorderSide(width: 1, color: Colors.grey.shade300))),
-              child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  child: Row(children: <Widget>[
-                    Expanded(
-                        child: FilledButton(
-                      onPressed: () {},
-                      style: filledButton,
-                      child: const Text('Confirm'),
-                    ))
-                  ]))),
+          // Container(
+          //     decoration: BoxDecoration(
+          //         border: Border.symmetric(
+          //             vertical: BorderSide.none,
+          //             horizontal:
+          //                 BorderSide(width: 1, color: Colors.grey.shade300))),
+          //     child: Padding(
+          //         padding:
+          //             const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          //         child: Row(children: <Widget>[
+          //           Expanded(
+          //               child: FilledButton(
+          //             onPressed: () {},
+          //             style: filledButton,
+          //             child: const Text('Confirm'),
+          //           ))
+          //         ]))),
         ]),
       ),
     );
