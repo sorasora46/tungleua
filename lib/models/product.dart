@@ -2,7 +2,7 @@ class Product {
   final String id;
   final String title;
   final String description;
-  final int price;
+  final double price;
   final String storeId;
   final String image;
   final int amount;
@@ -34,7 +34,7 @@ class Product {
       id: json['id'] as String,
       title: json['title'] as String,
       description: json['description'] as String,
-      price: json['price'] as int,
+      price: json['price'] as double,
       storeId: json['store_id'] as String,
       image: json['image'] as String,
       amount: json['amount'] as int,

@@ -88,9 +88,12 @@ class _LoginPageState extends State<LoginPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               // Tung Leua Logo
-                              Center(
-                                child: Image.network(
-                                    width: 174, height: 147, logoURL),
+                              const Center(
+                                child: Image(
+                                    width: 174,
+                                    height: 147,
+                                    image: AssetImage(
+                                        'assets/images/tungleua_logo.png')),
                               ),
 
                               const SizedBox(height: 32),
