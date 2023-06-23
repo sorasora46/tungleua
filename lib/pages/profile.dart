@@ -1,8 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tungleua/models/store.dart';
 import 'package:tungleua/pages/create_store.dart';
 import 'package:tungleua/pages/edit_profile.dart';
-import 'package:tungleua/pages/manage_store.dart';
+import 'package:tungleua/pages/shop_detail.dart';
+import 'package:tungleua/pages/wallet.dart';
+import 'package:tungleua/services/store_service.dart';
 import 'package:tungleua/services/user_service.dart';
 import 'package:tungleua/widgets/profile_pic.dart';
 import 'package:tungleua/widgets/show_dialog.dart';
@@ -16,6 +19,7 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   final uid = FirebaseAuth.instance.currentUser!.uid;
+  Store? store;
 
   void handleCreateStore() {
     Navigator.push(context,
@@ -29,9 +33,19 @@ class _ProfileState extends State<Profile> {
   }
 
   void handleManageStore() {
-    Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const ManageStore()))
-        .then((_) => setState(() {}));
+    if (store != null) {
+      Navigator.push(context,
+              MaterialPageRoute(builder: (context) => ShopDetail(store: store)))
+          .then((_) => setState(() {}));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    StoreService().getStoreUserById(uid).then((store) => setState(() {
+          this.store = store;
+        }));
   }
 
   @override
@@ -128,6 +142,22 @@ class _ProfileState extends State<Profile> {
                                       const Icon(Icons.location_on_outlined),
                                   title: Text(
                                       '${user.isShop ? "Manage" : "Create"} Store'),
+                                ),
+                              ),
+
+                              // Wallet
+                              GestureDetector(
+                                onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Wallet(
+                                              balance: user.balance,
+                                            ))),
+                                child: const ListTile(
+                                  iconColor: Colors.black,
+                                  trailing: Icon(Icons.arrow_right),
+                                  leading: Icon(Icons.wallet),
+                                  title: Text('Wallet'),
                                 ),
                               ),
 

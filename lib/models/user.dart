@@ -5,6 +5,7 @@ class AppUser {
   final String phone;
   final bool isShop;
   final String? image;
+  final double balance;
 
   AppUser({
     required this.id,
@@ -13,6 +14,7 @@ class AppUser {
     required this.phone,
     required this.isShop,
     this.image,
+    required this.balance,
   });
 
   Map<String, dynamic> toJSON() {
@@ -27,6 +29,11 @@ class AppUser {
   }
 
   factory AppUser.fromJSON(Map<String, dynamic> json) {
+    final balanceJson = json['balance'];
+    final castedBalance = balanceJson.runtimeType.toString() == 'int'
+        ? (balanceJson as int).toDouble()
+        : balanceJson as double;
+
     return AppUser(
       id: json['id'] as String,
       email: json['email'] as String,
@@ -34,6 +41,7 @@ class AppUser {
       phone: json['phone'] as String,
       isShop: json['is_shop'] as bool,
       image: json['image'] as String,
+      balance: castedBalance,
     );
   }
 
