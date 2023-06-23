@@ -30,11 +30,16 @@ class Product {
   }
 
   factory Product.fromJSON(Map<String, dynamic> json) {
+    final priceJson = json['price'];
+    final castedPrice = priceJson.runtimeType.toString() == 'int'
+        ? (priceJson as int).toDouble()
+        : priceJson as double;
+
     return Product(
       id: json['id'] as String,
       title: json['title'] as String,
       description: json['description'] as String,
-      price: json['price'] as double,
+      price: castedPrice,
       storeId: json['store_id'] as String,
       image: json['image'] as String,
       amount: json['amount'] as int,
