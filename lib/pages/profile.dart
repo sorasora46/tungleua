@@ -4,6 +4,7 @@ import 'package:tungleua/models/store.dart';
 import 'package:tungleua/pages/create_store.dart';
 import 'package:tungleua/pages/edit_profile.dart';
 import 'package:tungleua/pages/shop_detail.dart';
+import 'package:tungleua/pages/wallet.dart';
 import 'package:tungleua/services/store_service.dart';
 import 'package:tungleua/services/user_service.dart';
 import 'package:tungleua/widgets/profile_pic.dart';
@@ -141,6 +142,20 @@ class _ProfileState extends State<Profile> {
                                       const Icon(Icons.location_on_outlined),
                                   title: Text(
                                       '${user.isShop ? "Manage" : "Create"} Store'),
+                                ),
+                              ),
+
+                              // Wallet
+                              GestureDetector(
+                                onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const Wallet())),
+                                child: const ListTile(
+                                  iconColor: Colors.black,
+                                  trailing: Icon(Icons.arrow_right),
+                                  leading: Icon(Icons.wallet),
+                                  title: Text('Wallet'),
                                 ),
                               ),
 
