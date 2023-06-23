@@ -6,6 +6,7 @@ import 'package:tungleua/models/product.dart';
 import 'package:tungleua/models/store.dart';
 import 'package:tungleua/pages/create_product.dart';
 import 'package:tungleua/pages/edit_product.dart';
+import 'package:tungleua/pages/manage_store.dart';
 import 'package:tungleua/services/store_service.dart';
 import 'package:tungleua/widgets/add_product_bottom_sheet.dart';
 import 'package:tungleua/widgets/product_card.dart';
@@ -73,6 +74,16 @@ class _ShopDetailState extends State<ShopDetail> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+          actions: isOwner
+              ? [
+                  IconButton(
+                      onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ManageStore())),
+                      icon: const Icon(Icons.edit))
+                ]
+              : null,
           iconTheme: const IconThemeData(color: Colors.white),
           surfaceTintColor: Colors.transparent,
           // backgroundColor: Colors.transparent,
