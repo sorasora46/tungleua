@@ -150,7 +150,9 @@ class _ProfileState extends State<Profile> {
                                 onTap: () => Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => const Wallet())),
+                                        builder: (context) => Wallet(
+                                              balance: user.balance,
+                                            ))),
                                 child: const ListTile(
                                   iconColor: Colors.black,
                                   trailing: Icon(Icons.arrow_right),
