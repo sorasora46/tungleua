@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tungleua/widgets/deposit_form.dart';
 
 class Wallet extends StatefulWidget {
   const Wallet({Key? key, required this.balance}) : super(key: key);
@@ -11,6 +12,17 @@ class Wallet extends StatefulWidget {
 
 class _WalletState extends State<Wallet> {
   final userId = FirebaseAuth.instance.currentUser!.uid;
+
+  void handleDeposit() {
+    showModalBottomSheet<void>(
+      context: context,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (context) {
+        return const DepositForm();
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +51,8 @@ class _WalletState extends State<Wallet> {
                   child: Column(
                     children: [
                       IconButton(
-                          onPressed: () {}, icon: const Icon(Icons.wallet)),
+                          onPressed: handleDeposit,
+                          icon: const Icon(Icons.wallet)),
                       const Text('Add Money', style: TextStyle(fontSize: 12))
                     ],
                   ),
