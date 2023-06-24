@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 
@@ -48,7 +49,11 @@ class _SelectPaymentState extends State<SelectPayment> {
 
   void displayImageModal(BuildContext context, String userId) async {
     try {
-      Uint8List image = await PaymentService().sentInfo(userId);
+      String? image = await PaymentService().sentInfo(userId);
+
+      Uint8List imgConvert = const Base64Decoder().convert(image!);
+
+      // Create a Uint8List from the bytes
 
       Future<void> saveImageToDevice(Uint8List imageData) async {
         final result = await ImageGallerySaver.saveImage(imageData);
@@ -62,7 +67,7 @@ class _SelectPaymentState extends State<SelectPayment> {
         }
       }
 
-      Uint8List imageData = image; // Replace with your image data
+      // Replace with your image data
 
       showDialog(
         context: context,
@@ -71,11 +76,11 @@ class _SelectPaymentState extends State<SelectPayment> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.memory(image),
+              Image.memory(imgConvert),
               SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () async {
-                  await saveImageToDevice(imageData);
+                  await saveImageToDevice(imgConvert);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -93,16 +98,6 @@ class _SelectPaymentState extends State<SelectPayment> {
       // Handle the error case
       // ...
     }
-  }
-
-  Future<void> saveImage(File image) async {
-    final appDir = await getTemporaryDirectory();
-    final fileName =
-        DateTime.now().toIso8601String(); // Generate a unique file name
-    final savedImage = await image.copy('${appDir.path}/$fileName.png');
-
-    // Optionally, you can display a message or do something else with the saved image path
-    print('Image saved: ${savedImage.path}');
   }
 
   @override
