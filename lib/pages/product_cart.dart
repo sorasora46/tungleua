@@ -66,124 +66,121 @@ class _ProductCartState extends State<ProductCart> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-            automaticallyImplyLeading: false,
-            title: const Text('Cart'),
-            centerTitle: true),
-        body: Column(children: <Widget>[
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: items == null
-                    ? [const Center(child: CircularProgressIndicator())]
-                    : items!
-                        .map((item) => Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Dismissible(
-                                key: Key(item.productId),
-                                direction: DismissDirection.endToStart,
-                                onDismissed: (_) =>
-                                    handleDeleteItem(userId, item.productId),
-                                background: Container(
-                                  alignment: Alignment.centerRight,
-                                  color: Colors.red,
-                                  child: const Center(
-                                      child: Text('DELETE',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w500))),
-                                ),
-                                child: CartItemCard(
-                                    cartItem: item,
-                                    handleTotalPriceChange:
-                                        handleTotalPriceChange),
+    return Scaffold(
+      appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: const Text('Cart'),
+          centerTitle: true),
+      body: Column(children: <Widget>[
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              children: items == null
+                  ? [const Center(child: CircularProgressIndicator())]
+                  : items!
+                      .map((item) => Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Dismissible(
+                              key: Key(item.productId),
+                              direction: DismissDirection.endToStart,
+                              onDismissed: (_) =>
+                                  handleDeleteItem(userId, item.productId),
+                              background: Container(
+                                alignment: Alignment.centerRight,
+                                color: Colors.red,
+                                child: const Center(
+                                    child: Text('DELETE',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w500))),
                               ),
-                            ))
-                        .toList(),
-              ),
+                              child: CartItemCard(
+                                  cartItem: item,
+                                  handleTotalPriceChange:
+                                      handleTotalPriceChange),
+                            ),
+                          ))
+                      .toList(),
             ),
           ),
+        ),
 
-          // Code
-          Container(
-              decoration: BoxDecoration(
-                  border: Border.symmetric(
-                      vertical: BorderSide.none,
-                      horizontal:
-                          BorderSide(width: 1, color: Colors.grey.shade300))),
-              child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        const Text('Code',
-                            style: TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.w500)),
-                        selectedCoupon == null
-                            ? TextButton(
-                                onPressed: () => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => DiscountCode(
-                                            handleSelectCoupon:
-                                                handleSelectCoupon))),
-                                style: const ButtonStyle(
-                                    splashFactory: NoSplash.splashFactory),
-                                child: const Row(children: [
-                                  Text('Select Code',
-                                      style: TextStyle(fontSize: 14)),
-                                  Icon(Icons.arrow_forward_ios, size: 12)
-                                ]))
-                            : TextButton(
-                                onPressed: () => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => DiscountCode(
-                                            handleSelectCoupon:
-                                                handleSelectCoupon))),
-                                style: const ButtonStyle(
-                                    splashFactory: NoSplash.splashFactory),
-                                child: Row(children: [
-                                  Text(
-                                      'discount ${selectedCoupon!.discount * 100}% (${selectedCoupon!.title})',
-                                      style: const TextStyle(fontSize: 14)),
-                                  const Icon(Icons.arrow_forward_ios, size: 12)
-                                ]))
-                      ]))),
-          //Payment
-          Container(
-              decoration: BoxDecoration(
-                  border: Border.symmetric(
-                      vertical: BorderSide.none,
-                      horizontal:
-                          BorderSide(width: 2, color: Colors.grey.shade300))),
-              child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text('Total: ฿ ${calculatePrice()}',
-                            style: const TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.w500)),
-                        TextButton(
-                            onPressed: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const SelectPayment())),
-                            style: const ButtonStyle(
-                                splashFactory: NoSplash.splashFactory),
-                            child: const Row(children: [
-                              Text('Pay', style: TextStyle(fontSize: 14)),
-                            ])),
-                      ]))),
-        ]),
-      ),
+        // Code
+        Container(
+            decoration: BoxDecoration(
+                border: Border.symmetric(
+                    vertical: BorderSide.none,
+                    horizontal:
+                        BorderSide(width: 1, color: Colors.grey.shade300))),
+            child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      const Text('Code',
+                          style: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w500)),
+                      selectedCoupon == null
+                          ? TextButton(
+                              onPressed: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => DiscountCode(
+                                          handleSelectCoupon:
+                                              handleSelectCoupon))),
+                              style: const ButtonStyle(
+                                  splashFactory: NoSplash.splashFactory),
+                              child: const Row(children: [
+                                Text('Select Code',
+                                    style: TextStyle(fontSize: 14)),
+                                Icon(Icons.arrow_forward_ios, size: 12)
+                              ]))
+                          : TextButton(
+                              onPressed: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => DiscountCode(
+                                          handleSelectCoupon:
+                                              handleSelectCoupon))),
+                              style: const ButtonStyle(
+                                  splashFactory: NoSplash.splashFactory),
+                              child: Row(children: [
+                                Text(
+                                    'discount ${selectedCoupon!.discount * 100}% (${selectedCoupon!.title})',
+                                    style: const TextStyle(fontSize: 14)),
+                                const Icon(Icons.arrow_forward_ios, size: 12)
+                              ]))
+                    ]))),
+        //Payment
+        Container(
+            decoration: BoxDecoration(
+                border: Border.symmetric(
+                    vertical: BorderSide.none,
+                    horizontal:
+                        BorderSide(width: 2, color: Colors.grey.shade300))),
+            child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text('Total: ฿ ${calculatePrice()}',
+                          style: const TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w500)),
+                      TextButton(
+                          onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const SelectPayment())),
+                          style: const ButtonStyle(
+                              splashFactory: NoSplash.splashFactory),
+                          child: const Row(children: [
+                            Text('Pay', style: TextStyle(fontSize: 14)),
+                          ])),
+                    ]))),
+      ]),
     );
   }
 }

@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:tungleua/pages/product_cart.dart';
+import 'package:tungleua/services/cart_service.dart';
 
 import 'package:tungleua/services/payment_service.dart';
 
@@ -60,6 +61,7 @@ class _SelectPaymentState extends State<SelectPayment> {
         if (result['isSuccess']) {
           // Image saved successfully
           String savedFilePath = result['filePath'];
+
           print('Image saved at: $savedFilePath');
         } else {
           // Error saving image
@@ -80,12 +82,8 @@ class _SelectPaymentState extends State<SelectPayment> {
               SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () async {
+                  // await CartService().deleteAllItemFromCart(userId);
                   await saveImageToDevice(imgConvert);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ProductCart()),
-                  );
                 },
                 child: const Text('Save Image'),
               ),
