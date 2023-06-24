@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:tungleua/models/cart_item.dart';
 import 'package:tungleua/models/coupon.dart';
 import 'package:tungleua/pages/discount_code.dart';
+import 'package:tungleua/pages/select_payment.dart';
 import 'package:tungleua/services/cart_service.dart';
+
 import 'package:tungleua/widgets/cart_item_card.dart';
+
 import 'package:tungleua/widgets/show_dialog.dart';
 
 class ProductCart extends StatefulWidget {
@@ -151,25 +154,34 @@ class _ProductCartState extends State<ProductCart> {
                                   const Icon(Icons.arrow_forward_ios, size: 12)
                                 ]))
                       ]))),
-
-          // Pay
+          //Payment
           Container(
               decoration: BoxDecoration(
                   border: Border.symmetric(
                       vertical: BorderSide.none,
                       horizontal:
-                          BorderSide(width: 1, color: Colors.grey.shade300))),
+                          BorderSide(width: 2, color: Colors.grey.shade300))),
               child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text('Total: ฿ ${calculatePrice()}',
                             style: const TextStyle(
                                 fontSize: 14, fontWeight: FontWeight.w500)),
-                        FilledButton(onPressed: () {}, child: const Text('Pay'))
-                      ])))
+                        TextButton(
+                            onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const SelectPayment())),
+                            style: const ButtonStyle(
+                                splashFactory: NoSplash.splashFactory),
+                            child: const Row(children: [
+                              Text('Pay', style: TextStyle(fontSize: 14)),
+                            ])),
+                      ]))),
         ]),
       ),
     );
