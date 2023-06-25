@@ -22,6 +22,8 @@ dependencies:
   location: ^4.4.0
   path_provider: ^2.0.15
   permission_handler: ^10.3.0
+  provider: ^4.3.2+3
+
 
 dev_dependencies:
   flutter_test:
