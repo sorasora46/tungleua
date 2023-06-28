@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tungleua/services/payment_service.dart';
 import 'package:tungleua/styles/button_style.dart';
 import 'package:tungleua/styles/text_form_style.dart';
 
@@ -14,7 +15,9 @@ class _DepositFormState extends State<DepositForm> {
   final amountController = TextEditingController();
 
   Future<void> handleConfirmDeposit() async {
-    if (depositFormKey.currentState!.validate()) {}
+    if (depositFormKey.currentState!.validate()) {
+      print(PaymentService().topUp(amountController.text));
+    }
   }
 
   String? amountValidator(value) {

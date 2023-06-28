@@ -27,31 +27,46 @@ class PaymentService {
     return '';
   }
 
-  // pay from wallet
-  Future<void> payByWallet() async {
-    await Api().dio.get('/payments/pay/wallet/$userId');
-  }
-
-  Future<Uint8List> sentInfo(String userId) async {
-    final response = await Api().dio.post('/payments/user/$userId');
-
+  Future<String?> topUp(String amount) async {
+    final response =
+        await Api().dio.post('/payments/user/$userId/amount/$amount');
     if (response.statusCode == 200) {
       final responseData = response.data;
-      final result = responseData['result'];
-      final imageBytes = base64Decode(result);
-      final image = Image.memory(imageBytes);
-      return dataFromBase64String(result);
+      print(responseData);
+
+      return responseData;
     } else {
       print('Error: ${response.statusCode}');
       throw Exception('Failed to load image');
     }
   }
-}
 
-Uint8List dataFromBase64String(String base64String) {
-  return base64Decode(base64String);
-}
+  // pay from wallet
+  Future<String?> payByWallet(String userId) async {
+    final response = await Api().dio.post('/payments/payWallet/$userId');
 
-String base64String(Uint8List data) {
-  return base64Encode(data);
+    if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.data);
+      final jsonString = jsonEncode(responseData);
+      print(jsonString);
+
+      return jsonString;
+    } else {
+      print('Error: ${response.statusCode}');
+      throw Exception('Failed to load image');
+    }
+  }
+
+  Future<String?> sentInfo(String userId) async {
+    final response = await Api().dio.post('/payments/user/$userId');
+
+    if (response.statusCode == 200) {
+      final responseData = response.data;
+
+      return responseData;
+    } else {
+      print('Error: ${response.statusCode}');
+      throw Exception('Failed to load image');
+    }
+  }
 }
