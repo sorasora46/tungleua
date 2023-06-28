@@ -177,7 +177,9 @@ class _SelectPaymentState extends State<SelectPayment> {
 
       showDialog(
         context: context,
-        builder: (BuildContext context) {
+        builder: (BuildContext dialogContext) {
+          final localContext = dialogContext;
+
           return Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -188,16 +190,16 @@ class _SelectPaymentState extends State<SelectPayment> {
                 onPressed: () async {
                   // await CartService().deleteAllItemFromCart(userId);
                   await saveImageToDevice(imgConvert);
-                  Navigator.pop(context);
+                  Navigator.pop(localContext);
                   Navigator.pop(
-                    context,
+                    localContext,
                     MaterialPageRoute(builder: (context) => ProductCart()),
                   );
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Your already save the QrCode')),
+                  ScaffoldMessenger.of(localContext).showSnackBar(
+                    SnackBar(content: Text('You have saved the QR Code')),
                   );
                 },
-                child: const Text('Save QrCode'),
+                child: const Text('Save QR Code'),
               ),
             ],
           );

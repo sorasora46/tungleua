@@ -46,8 +46,8 @@ class Store {
       timeOpen: json['time_open'] as String,
       timeClose: json['time_close'] as String,
       description: json['description'] as String,
-      latitude: json['latitude'] as double,
-      longtitude: json['longtitude'] as double,
+      latitude: double.parse(json['latitude'].toString()),
+      longtitude: double.parse(json['longtitude'].toString()),
       userId: json['user_id'] as String,
       image: json['image'] as String,
     );
