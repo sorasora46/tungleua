@@ -27,9 +27,34 @@ class PaymentService {
     return '';
   }
 
+  Future<String?> topUp(String amount) async {
+    final response =
+        await Api().dio.post('/payments/user/$userId/amount/$amount');
+    if (response.statusCode == 200) {
+      final responseData = response.data;
+      print(responseData);
+
+      return responseData;
+    } else {
+      print('Error: ${response.statusCode}');
+      throw Exception('Failed to load image');
+    }
+  }
+
   // pay from wallet
-  Future<void> payByWallet() async {
-    await Api().dio.get('/payments/pay/wallet/$userId');
+  Future<String?> payByWallet(String userId) async {
+    final response = await Api().dio.post('/payments/payWallet/$userId');
+
+    if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.data);
+      final jsonString = jsonEncode(responseData);
+      print(jsonString);
+
+      return jsonString;
+    } else {
+      print('Error: ${response.statusCode}');
+      throw Exception('Failed to load image');
+    }
   }
 
   Future<String?> sentInfo(String userId) async {
