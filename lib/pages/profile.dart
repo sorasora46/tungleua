@@ -43,9 +43,12 @@ class _ProfileState extends State<Profile> {
   @override
   void initState() {
     super.initState();
-    StoreService().getStoreUserById(uid).then((store) => setState(() {
-          this.store = store;
-        }));
+    StoreService().getStoreUserById(uid).then((store) => {
+          if (mounted)
+            setState(() {
+              this.store = store;
+            })
+        });
   }
 
   @override

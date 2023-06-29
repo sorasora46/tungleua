@@ -43,12 +43,15 @@ class _ProductCartState extends State<ProductCart> {
   @override
   void initState() {
     super.initState();
-    CartService().getCartItems(userId).then((items) => setState(() {
-          this.items = items;
-          for (int i = 0; i < items!.length; i++) {
-            totalPrice = totalPrice! + (items[i].price * items[i].amount);
-          }
-        }));
+    CartService().getCartItems(userId).then((items) => {
+          if (mounted)
+            setState(() {
+              this.items = items;
+              for (int i = 0; i < items!.length; i++) {
+                totalPrice = totalPrice! + (items[i].price * items[i].amount);
+              }
+            })
+        });
   }
 
   void handleTotalPriceChange(double price) {
