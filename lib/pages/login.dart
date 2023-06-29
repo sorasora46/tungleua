@@ -163,6 +163,10 @@ class _LoginPageState extends State<LoginPage> {
                                   width: double.infinity,
                                   height: 45,
                                   child: FilledButton(
+                                      style: const ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStatePropertyAll(
+                                                  Colors.green)),
                                       onPressed: () {
                                         if (loginFormKey.currentState!
                                             .validate()) {

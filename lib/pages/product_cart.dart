@@ -134,7 +134,8 @@ class _ProductCartState extends State<ProductCart> {
                                   splashFactory: NoSplash.splashFactory),
                               child: const Row(children: [
                                 Text('Select Code',
-                                    style: TextStyle(fontSize: 14)),
+                                    style: TextStyle(
+                                        fontSize: 14, color: Colors.green)),
                                 Icon(Icons.arrow_forward_ios, size: 12)
                               ]))
                           : TextButton(
@@ -168,7 +169,9 @@ class _ProductCartState extends State<ProductCart> {
                     children: <Widget>[
                       Text('Total: ฿ ${calculatePrice()}',
                           style: const TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.w500)),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          )),
                       TextButton(
                           onPressed: () => Navigator.push(
                               context,
@@ -177,7 +180,9 @@ class _ProductCartState extends State<ProductCart> {
                           style: const ButtonStyle(
                               splashFactory: NoSplash.splashFactory),
                           child: const Row(children: [
-                            Text('Pay', style: TextStyle(fontSize: 14)),
+                            Text('Pay',
+                                style: TextStyle(
+                                    fontSize: 14, color: Colors.green)),
                           ])),
                     ]))),
       ]),

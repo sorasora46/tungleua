@@ -1,12 +1,8 @@
 import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:tungleua/services/api.dart';
 
-import 'package:flutter/material.dart';
 
 class PaymentService {
   final userId = FirebaseAuth.instance.currentUser!.uid;
