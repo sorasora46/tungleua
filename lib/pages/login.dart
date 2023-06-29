@@ -169,7 +169,8 @@ class _LoginPageState extends State<LoginPage> {
                                           AuthService()
                                               .signInWithEmailAndPassword(
                                                   emailController.text,
-                                                  passwordController.text);
+                                                  passwordController.text,
+                                                  context);
                                         }
                                       },
                                       child: const Row(

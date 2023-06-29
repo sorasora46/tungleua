@@ -5,6 +5,7 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tungleua/models/coupon.dart';
 
 import 'package:tungleua/pages/product_cart.dart';
 import 'package:tungleua/services/cart_service.dart';
@@ -15,8 +16,8 @@ import 'package:tungleua/services/payment_service.dart';
 import 'package:flutter/services.dart';
 
 class SelectPayment extends StatefulWidget {
-  const SelectPayment({Key? key}) : super(key: key);
-
+  const SelectPayment({Key? key, required this.coupon}) : super(key: key);
+  final Coupon? coupon;
   @override
   State<SelectPayment> createState() => _SelectPaymentState();
 }
@@ -40,17 +41,17 @@ class _SelectPaymentState extends State<SelectPayment> {
     setState(() {
       selectPayment = check;
       if (selectPayment == 'QR PromptPay') {
-        displayImageModal(context, userId);
+        displayImageModal(context, userId, widget.coupon);
       } else if (selectPayment == 'TungleuaPay') {
-        checkMoney(context, userId);
+        checkMoney(context, userId, widget.coupon);
       }
       print(selectPayment);
     });
   }
 
-  void checkMoney(BuildContext context, String userId) async {
+  void checkMoney(BuildContext context, String userId, Coupon? coupon) async {
     try {
-      String? result = await PaymentService().payByWallet(userId);
+      String? result = await PaymentService().payByWallet(userId, coupon);
       if (result != null) {
         Map<String, dynamic> jsonData = jsonDecode(result);
 
@@ -150,59 +151,77 @@ class _SelectPaymentState extends State<SelectPayment> {
     }
   }
 
-  void displayImageModal(BuildContext context, String userId) async {
+  void displayImageModal(
+      BuildContext context, String userId, Coupon? coupon) async {
     try {
-      String? image = await PaymentService().sentInfo(userId);
+      String? result = await PaymentService().sentInfo(userId, coupon);
+      if (result != null) {
+        Map<String, dynamic> jsonData = jsonDecode(result);
 
-      Uint8List imgConvert = const Base64Decoder().convert(image!);
+        // Access the data in the jsonData map using the correct keys
+        String? message = jsonData['message'];
+        String? image = jsonData['image'];
 
-      // Create a Uint8List from the bytes
+        Uint8List imgConvert = const Base64Decoder().convert(image!);
 
-      Future<void> saveImageToDevice(Uint8List imageData) async {
-        final result = await ImageGallerySaver.saveImage(imageData);
-        if (result['isSuccess']) {
-          // Image saved successfully
-          String savedFilePath = result['filePath'];
+        // Create a Uint8List from the bytes
 
-          print('Image saved at: $savedFilePath');
-        } else {
-          // Error saving image
-          print('Failed to save image.');
+        Future<void> saveImageToDevice(Uint8List imageData) async {
+          final result = await ImageGallerySaver.saveImage(imageData);
+          if (result['isSuccess']) {
+            // Image saved successfully
+            String savedFilePath = result['filePath'];
+
+            print('Image saved at: $savedFilePath');
+          } else {
+            // Error saving image
+            print('Failed to save image.');
+          }
         }
+
+        // Replace with your image data
+
+        showDialog(
+          context: context,
+          builder: (BuildContext dialogContext) {
+            final localContext = dialogContext;
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  message!,
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 10),
+                Image.memory(imgConvert),
+                SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () async {
+                    // await CartService().deleteAllItemFromCart(userId);
+                    await saveImageToDevice(imgConvert);
+                    Navigator.pop(localContext);
+                    Navigator.pop(
+                      localContext,
+                      MaterialPageRoute(builder: (context) => ProductCart()),
+                    );
+                    ScaffoldMessenger.of(localContext).showSnackBar(
+                      SnackBar(content: Text('You have saved the QR Code')),
+                    );
+                  },
+                  child: const Text('Save QR Code'),
+                ),
+              ],
+            );
+          },
+        );
       }
-
-      // Replace with your image data
-
-      showDialog(
-        context: context,
-        builder: (BuildContext dialogContext) {
-          final localContext = dialogContext;
-
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.memory(imgConvert),
-              SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () async {
-                  // await CartService().deleteAllItemFromCart(userId);
-                  await saveImageToDevice(imgConvert);
-                  Navigator.pop(localContext);
-                  Navigator.pop(
-                    localContext,
-                    MaterialPageRoute(builder: (context) => ProductCart()),
-                  );
-                  ScaffoldMessenger.of(localContext).showSnackBar(
-                    SnackBar(content: Text('You have saved the QR Code')),
-                  );
-                },
-                child: const Text('Save QR Code'),
-              ),
-            ],
-          );
-        },
-      );
     } catch (error) {
       print('Error: $error');
       // Handle the error case
