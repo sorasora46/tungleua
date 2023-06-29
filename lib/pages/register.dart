@@ -351,6 +351,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                 width: double.infinity,
                                 height: 45,
                                 child: FilledButton(
+                                    style: const ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStatePropertyAll(
+                                                Colors.green)),
                                     onPressed: handleRegister,
                                     child: const Row(
                                         mainAxisAlignment:
