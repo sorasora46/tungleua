@@ -18,10 +18,6 @@ class _LoginPageState extends State<LoginPage> {
   bool isShowPassword = false;
   bool isShowClearIcon = false;
 
-  // TODO: Don't forget to change this
-  final logoURL =
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWxsMeGWR5TFjpbKK6ajHfuA_JAsJlAxTuxAvN5wni4Q&s';
-
   void handleEmailChange(value) {
     setState(() {
       isShowClearIcon = value.isNotEmpty;
@@ -89,11 +85,11 @@ class _LoginPageState extends State<LoginPage> {
                             children: <Widget>[
                               // Tung Leua Logo
                               const Center(
-                                child: Image(
-                                    width: 174,
-                                    height: 147,
-                                    image: AssetImage(
-                                        'assets/images/tungleua_logo.png')),
+                                child: CircleAvatar(
+                                  backgroundImage: AssetImage(
+                                      'assets/images/tungleua_logo.png'),
+                                  radius: 150,
+                                ),
                               ),
 
                               const SizedBox(height: 32),
@@ -163,6 +159,10 @@ class _LoginPageState extends State<LoginPage> {
                                   width: double.infinity,
                                   height: 45,
                                   child: FilledButton(
+                                      style: const ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStatePropertyAll(
+                                                  Colors.green)),
                                       onPressed: () {
                                         if (loginFormKey.currentState!
                                             .validate()) {
