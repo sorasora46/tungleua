@@ -176,7 +176,9 @@ class _ProductCartState extends State<ProductCart> {
                           onPressed: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const SelectPayment())),
+                                  builder: (context) => SelectPayment(
+                                        coupon: selectedCoupon,
+                                      ))),
                           style: const ButtonStyle(
                               splashFactory: NoSplash.splashFactory),
                           child: const Row(children: [

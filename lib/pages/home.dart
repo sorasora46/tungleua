@@ -50,9 +50,13 @@ class _HomeState extends State<Home> {
     currentLocation = LatLng(locationData.latitude!, locationData.longitude!);
     await StoreService() // wth flutter?!?!? then return future? I have to await for then too?!?!?
         .populateMap(locationData.latitude!, locationData.longitude!)
-        .then((stores) => setState(() {
-              this.stores = stores;
-            }));
+        .then((stores) {
+      if (mounted) {
+        setState(() {
+          this.stores = stores;
+        });
+      }
+    });
     location.onLocationChanged.listen((newLocation) {
       if (mounted) {
         setState(() {

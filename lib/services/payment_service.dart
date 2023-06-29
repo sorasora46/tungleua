@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:tungleua/models/coupon.dart';
 import 'package:tungleua/services/api.dart';
 
 import 'package:flutter/material.dart';
@@ -42,8 +43,10 @@ class PaymentService {
   }
 
   // pay from wallet
-  Future<String?> payByWallet(String userId) async {
-    final response = await Api().dio.post('/payments/payWallet/$userId');
+  Future<String?> payByWallet(String userId, Coupon? coupon) async {
+    final couponId = coupon?.id ?? '';
+    final response =
+        await Api().dio.post('/payments/payWallet/$userId?coupon_id=$couponId');
 
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.data);
@@ -57,13 +60,18 @@ class PaymentService {
     }
   }
 
-  Future<String?> sentInfo(String userId) async {
-    final response = await Api().dio.post('/payments/user/$userId');
+  Future<String?> sentInfo(String userId, Coupon? coupon) async {
+    final couponId = coupon?.id ?? '';
+
+    final response =
+        await Api().dio.post('/payments/user/$userId?coupon_id=$couponId');
 
     if (response.statusCode == 200) {
-      final responseData = response.data;
+      final responseData = jsonDecode(response.data);
+      final jsonString = jsonEncode(responseData);
+      print(jsonString);
 
-      return responseData;
+      return jsonString;
     } else {
       print('Error: ${response.statusCode}');
       throw Exception('Failed to load image');
