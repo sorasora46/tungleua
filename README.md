@@ -9,7 +9,7 @@ A tungluea project created in flutter . Tungluea supports both web and mobile, c
 Download or clone this repo by using the link below:
 
 ```
-https://github.com/zubairehman/flutter-boilerplate-project.git
+[https://github.com/zubairehman/flutter-boilerplate-project.git](https://github.com/sorasora46/Tungleua.git)
 ```
 
 **Step 2:**
